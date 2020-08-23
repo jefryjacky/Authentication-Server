@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*
  * Created by Jefry Jacky on 23/08/20.
  */
 @RestController
+@RequestMapping("/api")
 class RegisterController {
 
     @Autowired
