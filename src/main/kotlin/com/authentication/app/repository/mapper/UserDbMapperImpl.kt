@@ -7,9 +7,9 @@ import com.authentication.app.repository.entity.UserDB
  * Created by Jefry Jacky on 24/08/20.
  */
 @Mapper
-class UserDbMapperImpl: UserDbMapper {
+class UserDbMapperImpl: AbstractMapper<UserDB, User>() {
 
-    override fun map(user: User): UserDB {
+    override fun mapFromEntity(user: User): UserDB {
         return UserDB(
                 user.userId,
                 user.email,
@@ -17,7 +17,7 @@ class UserDbMapperImpl: UserDbMapper {
         )
     }
 
-    override fun map(userDb: UserDB): User {
+    override fun mapToEntity(userDb: UserDB): User {
         return User(
                 userDb.userId,
                 userDb.email,
