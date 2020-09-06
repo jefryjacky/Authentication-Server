@@ -19,10 +19,10 @@ class AccessTokenDbMapperImpl: AbstractMapper<AccessTokenDB, AccessToken>() {
 
     override fun mapFromEntity(entity: AccessToken): AccessTokenDB {
         return AccessTokenDB(
-                entity.userId,
-                entity.accessToken,
-                entity.expiredDate,
-                entity.requestToken
+                userId =  entity.userId,
+                accessToken = entity.accessToken,
+                expiredDate = entity.expiredDate,
+                requestToken = entity.requestToken
         )
     }
 }

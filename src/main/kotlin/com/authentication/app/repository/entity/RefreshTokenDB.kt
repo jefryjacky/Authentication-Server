@@ -9,12 +9,10 @@ import javax.persistence.Id
  * Created by Jefry Jacky on 06/09/20.
  */
 @Entity
-data class AccessTokenDB (
+data class RefreshTokenDB(
         @Id
         @GeneratedValue(strategy = GenerationType.AUTO)
         val id: Long = 0,
         val userId: Long,
-        val accessToken: String,
-        val expiredDate: Long,
-        val requestToken: String
+        val refreshToken: String
 )
