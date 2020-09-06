@@ -5,4 +5,5 @@ package com.authentication.app.domain.utils
  */
 interface PasswordCrypto {
     fun hashPassword(password: String): String
+    fun matchPassword(password: String, hashPassword: String): Boolean
 }
