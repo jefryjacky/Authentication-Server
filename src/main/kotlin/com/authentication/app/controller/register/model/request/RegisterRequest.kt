@@ -1,4 +1,4 @@
-package com.authentication.app.controller.model.request
+package com.authentication.app.controller.register.model.request
 
 import com.fasterxml.jackson.annotation.JsonProperty
 

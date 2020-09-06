@@ -1,6 +1,6 @@
-package com.authentication.app.controller
+package com.authentication.app.controller.register
 
-import com.authentication.app.controller.model.request.RegisterRequest
+import com.authentication.app.controller.register.model.request.RegisterRequest
 import com.authentication.app.domain.usecase.register.RegisterInputData
 import com.authentication.app.domain.usecase.register.RegisterService
 import org.springframework.beans.factory.annotation.Autowired
