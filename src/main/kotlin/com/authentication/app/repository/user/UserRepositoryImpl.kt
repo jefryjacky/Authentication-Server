@@ -22,4 +22,9 @@ class UserRepositoryImpl: UserRepository {
         val userDb = userDbMapper.mapFromEntity(user)
         jpaUserRepository.save(userDb)
     }
+
+    override fun getUser(email: String): User {
+        val userDb = jpaUserRepository.findByEmail(email)
+        return userDbMapper.mapToEntity(userDb)
+    }
 }

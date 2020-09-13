@@ -17,9 +17,10 @@ class AccessTokenRepositoryImpl: AccessTokenRepository {
     @Autowired
     private lateinit var jpaAccessTokenRepository: JpaAccessTokenRepository
 
-    override fun saveToken(accessToken: AccessToken) {
-        val accessTokenDb = accessAccessTokenDbMapper.mapFromEntity(accessToken)
-        jpaAccessTokenRepository.save(accessTokenDb)
+    override fun saveToken(accessToken: AccessToken): AccessToken {
+        var accessTokenDb = accessAccessTokenDbMapper.mapFromEntity(accessToken)
+        accessTokenDb =  jpaAccessTokenRepository.save(accessTokenDb)
+        return accessAccessTokenDbMapper.mapToEntity(accessTokenDb)
     }
 
 }

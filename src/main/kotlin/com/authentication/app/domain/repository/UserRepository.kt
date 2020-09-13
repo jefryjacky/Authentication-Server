@@ -7,4 +7,5 @@ import com.authentication.app.domain.entity.User
  */
 interface UserRepository {
     fun save(user: User)
+    fun getUser(email: String): User
 }

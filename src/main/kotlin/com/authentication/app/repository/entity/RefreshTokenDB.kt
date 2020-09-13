@@ -14,5 +14,6 @@ data class RefreshTokenDB(
         @GeneratedValue(strategy = GenerationType.AUTO)
         val id: Long = 0,
         val userId: Long,
-        val refreshToken: String
+        val token: String,
+        val createdDate: Long
 )

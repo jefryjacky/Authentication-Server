@@ -1,9 +1,6 @@
 package com.authentication.app.repository.entity
 
-import javax.persistence.Entity
-import javax.persistence.GeneratedValue
-import javax.persistence.GenerationType
-import javax.persistence.Id
+import javax.persistence.*
 
 /**
  * Created by Jefry Jacky on 23/08/20.

@@ -10,8 +10,9 @@ import com.authentication.app.repository.entity.AccessTokenDB
 class AccessTokenDbMapperImpl: AbstractMapper<AccessTokenDB, AccessToken>() {
     override fun mapToEntity(dbAccess: AccessTokenDB): AccessToken {
         return AccessToken(
+                dbAccess.id,
                dbAccess.userId,
-                dbAccess.accessToken,
+                dbAccess.token,
                 dbAccess.expiredDate,
                 dbAccess.requestToken
         )
@@ -19,8 +20,9 @@ class AccessTokenDbMapperImpl: AbstractMapper<AccessTokenDB, AccessToken>() {
 
     override fun mapFromEntity(entity: AccessToken): AccessTokenDB {
         return AccessTokenDB(
+                id = entity.id,
                 userId =  entity.userId,
-                accessToken = entity.accessToken,
+                token = entity.token,
                 expiredDate = entity.expiredDate,
                 requestToken = entity.requestToken
         )

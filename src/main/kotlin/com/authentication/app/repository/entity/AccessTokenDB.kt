@@ -14,7 +14,7 @@ data class AccessTokenDB (
         @GeneratedValue(strategy = GenerationType.AUTO)
         val id: Long = 0,
         val userId: Long,
-        val accessToken: String,
+        val token: String,
         val expiredDate: Long,
         val requestToken: String
 )
