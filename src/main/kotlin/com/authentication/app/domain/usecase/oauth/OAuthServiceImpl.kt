@@ -40,8 +40,8 @@ class OAuthServiceImpl: OAuthService {
         val matched = passwordCrypto.matchPassword(credential.password, user.hashPassword)
         if(matched){
             val token = tokenGenerator.generate(REFRESH_TOKEN_LENGTH)
-            val refreshToken = RefreshToken(userId = user.userId, token = token)
-            refreshTokenRepository.save(refreshToken)
+            var refreshToken = RefreshToken(userId = user.userId, token = token)
+            refreshToken = refreshTokenRepository.save(refreshToken)
             return requestAccessToken(refreshToken)
         } else {
             throw IllegalAccessException()
@@ -49,7 +49,7 @@ class OAuthServiceImpl: OAuthService {
     }
 
     private fun requestAccessToken(refreshToken: RefreshToken): TokenData {
-        val localRefreshToken = refreshTokenRepository.getToken(refreshToken.token, refreshToken.userId)
+        val localRefreshToken = refreshTokenRepository.getToken(refreshToken.id)
         if(localRefreshToken != null){
             val token = tokenGenerator.generate(ACCESS_TOKEN_LENGTH)
             val expired = System.currentTimeMillis() + ACCESS_TOKEN_EXPIRED_DURATION
@@ -57,7 +57,7 @@ class OAuthServiceImpl: OAuthService {
                     token = token, expiredDate = expired, requestToken = refreshToken.token)
             accessToken = accessTokenRepository.saveToken(accessToken)
             val encodeAccessToken = tokenEncoder.encode(accessToken.id, accessToken.token)
-            val encodeRefreshToken = tokenEncoder.encode(accessToken.id, accessToken.token)
+            val encodeRefreshToken = tokenEncoder.encode(refreshToken.id, refreshToken.token)
             return TokenData(encodeAccessToken, encodeRefreshToken, expired)
         } else{
             throw IllegalAccessException()
