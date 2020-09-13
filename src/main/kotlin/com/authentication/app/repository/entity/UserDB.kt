@@ -10,6 +10,7 @@ data class UserDB (
         @Id
         @GeneratedValue(strategy = GenerationType.AUTO)
         val userId: Long,
+        @Column(unique = true)
         val email: String,
         val hashPassword: String
 )
