@@ -1,7 +1,6 @@
 package com.authentication.app.utils.jwt
 
 import com.google.gson.Gson
-import com.google.gson.JsonElement
 import java.util.*
 
 /**
@@ -14,7 +13,7 @@ abstract class JWT {
     protected abstract fun createHeader(): String
     protected abstract fun createSignature(encodedHeader: String, encodedPayload:String):ByteArray
 
-    fun generate(payload: JsonElement): String{
+    fun<T> generate(payload: T): String{
         val encodedHeader = encoder.encodeToString(createHeader().toByteArray())
         val encodedPayload = encoder.encodeToString(gson.toJson(payload).toByteArray())
         val encodedSignature = encoder.encodeToString(createSignature(encodedHeader, encodedPayload))
