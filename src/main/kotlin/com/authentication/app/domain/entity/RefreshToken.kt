@@ -5,7 +5,7 @@ package com.authentication.app.domain.entity
  */
 data class RefreshToken(
         val id: Long = 0,
-        val userId: Long,
+        val userId: Long = 0,
         val token: String,
         val createdDate: Long = System.currentTimeMillis()
 )

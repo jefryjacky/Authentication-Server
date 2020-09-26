@@ -45,12 +45,18 @@ class OAuthServiceImpl: OAuthService {
         }
     }
 
-    private fun requestAccessToken(refreshToken: RefreshToken): TokenData {
+    override fun requestAccessToken(refreshTokenString: String): TokenData {
+        val decode = tokenEncoder.decode(refreshTokenString)
+        val refreshToken = RefreshToken(id = decode.first, token = decode.second)
+        return requestAccessToken(refreshToken)
+    }
+
+    fun requestAccessToken(refreshToken: RefreshToken): TokenData {
         val localRefreshToken = refreshTokenRepository.getToken(refreshToken.id)
-        if(localRefreshToken != null){
+        if(localRefreshToken != null && localRefreshToken.token == refreshToken.token){
             val issueDate = System.currentTimeMillis()
             val expiredDate = issueDate + ACCESS_TOKEN_EXPIRED_DURATION
-            val payload = Payload(refreshToken.userId, issueDate, expiredDate)
+            val payload = Payload(localRefreshToken.userId, issueDate, expiredDate)
             val jwt = jwtGenerator.generate(payload)
             val encodeRefreshToken = tokenEncoder.encode(refreshToken.id, refreshToken.token)
             return TokenData(jwt, encodeRefreshToken, expiredDate)

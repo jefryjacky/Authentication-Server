@@ -23,17 +23,30 @@ class OAuthController {
     @PostMapping("/token", consumes = [MediaType.APPLICATION_FORM_URLENCODED_VALUE])
     @ResponseStatus(HttpStatus.OK)
     fun requestAccessToken(@RequestParam map: MultiValueMap<String, String>): TokenResponse{
-        val email = map.getFirst("email")
-        val password = map.getFirst("password")
-        if(!email.isNullOrBlank() && !password.isNullOrBlank()) {
-            try {
-                val credential = CredentialData(email, password)
-                val tokenData = service.requestAccessToken(credential)
+        val email = map.getFirst(EMAIL_PARAM)
+        val password = map.getFirst(PASSWORD_PARAM)
+        val refreshToken = map.getFirst(REFRESH_TOKEN_PARAM)
+        val grantType = map.getFirst(GRANT_TYPE_PARAM)
+        try {
+            if(!grantType.isNullOrBlank() && grantType == REFRESH_TOKEN_GRANT_TYPE && !refreshToken.isNullOrBlank()){
+                val tokenData = service.requestAccessToken(refreshToken)
                 return TokenResponse(tokenData.accessToken, tokenData.refreshToken, tokenData.expiredTime.toString())
-            } catch (e: IllegalAccessException){
-                throw ResponseStatusException(HttpStatus.FORBIDDEN)
+            } else if(!email.isNullOrBlank() && !password.isNullOrBlank()) {
+                    val credential = CredentialData(email, password)
+                    val tokenData = service.requestAccessToken(credential)
+                    return TokenResponse(tokenData.accessToken, tokenData.refreshToken, tokenData.expiredTime.toString())
             }
+        } catch (e: IllegalAccessException){
+            throw ResponseStatusException(HttpStatus.FORBIDDEN)
         }
         throw ResponseStatusException(HttpStatus.BAD_REQUEST)
+    }
+
+    companion object{
+        private const val EMAIL_PARAM = "email"
+        private const val PASSWORD_PARAM = "password"
+        private const val GRANT_TYPE_PARAM = "grant_type"
+        private const val REFRESH_TOKEN_PARAM = "refresh_token"
+        private const val REFRESH_TOKEN_GRANT_TYPE = "refresh_token"
     }
 }
