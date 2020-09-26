@@ -1,11 +1,13 @@
 package com.authentication.app.utils.jwt
 
+import org.springframework.stereotype.Service
 import javax.crypto.Mac
 import javax.crypto.spec.SecretKeySpec
 
 /**
  * Created by Jefry Jacky on 16/09/20.
  */
+@Service
 internal class JWTHS256: JWT() {
 
     override fun createHeader(): String {
