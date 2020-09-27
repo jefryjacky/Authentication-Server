@@ -1,4 +1,4 @@
-package com.authentication.app.domain.usecase.register
+package com.authentication.app.domain.usecase.user
 
 import com.authentication.app.domain.ERROR_DUPLICATE_EMAIL
 import com.authentication.app.domain.entity.User
