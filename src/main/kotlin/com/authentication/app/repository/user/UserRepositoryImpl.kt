@@ -27,4 +27,16 @@ class UserRepositoryImpl: UserRepository {
         val userDb = jpaUserRepository.findByEmail(email)
         return userDbMapper.mapToEntity(userDb)
     }
+
+    override fun getUserById(userId: Long): User? {
+        val userDbOpt = jpaUserRepository.findById(userId)
+        if(userDbOpt.isPresent) {
+            return userDbMapper.mapToEntity(userDbOpt.get())
+        }
+        return null
+    }
+
+    override fun updatePassword(password: String, userId: Long) {
+        jpaUserRepository.updatePassword(password, userId)
+    }
 }
