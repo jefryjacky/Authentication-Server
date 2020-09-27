@@ -31,4 +31,8 @@ class RefreshTokenRepositoryImpl: RefreshTokenRepository {
         }
         return null
     }
+
+    override fun deleteTokenByUserId(userId: Long) {
+        jpaRefreshTokenRepository.deleteByUserId(userId)
+    }
 }

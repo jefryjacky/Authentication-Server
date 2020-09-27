@@ -1,5 +1,6 @@
 package com.authentication.app.domain.usecase.password
 
+import com.authentication.app.domain.repository.RefreshTokenRepository
 import com.authentication.app.domain.repository.UserRepository
 import com.authentication.app.domain.utils.PasswordCrypto
 import org.springframework.beans.factory.annotation.Autowired
@@ -12,6 +13,8 @@ import org.springframework.stereotype.Service
 class UpdatePasswordServiceImpl:UpdatePasswordService {
 
     @Autowired
+    private lateinit var refreshTokenRepository: RefreshTokenRepository
+    @Autowired
     private lateinit var passwordCrypto: PasswordCrypto
     @Autowired
     private lateinit var userRepository: UserRepository
@@ -21,6 +24,7 @@ class UpdatePasswordServiceImpl:UpdatePasswordService {
         if(user != null && passwordCrypto.matchPassword(password, user.hashPassword)){
             val newPasswordHashed = passwordCrypto.hashPassword(newPassword)
             userRepository.updatePassword(newPasswordHashed, userId)
+            refreshTokenRepository.deleteTokenByUserId(userId)
             return
         }
         throw IllegalAccessException()

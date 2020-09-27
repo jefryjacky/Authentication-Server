@@ -8,4 +8,5 @@ import com.authentication.app.domain.entity.RefreshToken
 interface RefreshTokenRepository {
     fun save(refreshToken: RefreshToken): RefreshToken
     fun getToken(tokenId: Long): RefreshToken?
+    fun deleteTokenByUserId(userId: Long)
 }
