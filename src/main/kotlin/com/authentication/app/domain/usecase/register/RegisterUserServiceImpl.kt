@@ -7,23 +7,21 @@ import com.authentication.app.domain.utils.PasswordCrypto
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.dao.DataIntegrityViolationException
 import org.springframework.stereotype.Service
-import java.lang.Exception
 import java.lang.IllegalArgumentException
-import java.sql.SQLIntegrityConstraintViolationException
 
 /**
  * Created by Jefry Jacky on 23/08/20.
  */
 @Service
-class RegisterServiceImpl:RegisterService {
+class RegisterUserServiceImpl:RegisterUserService {
     @Autowired
     private lateinit var passwordCrypto: PasswordCrypto
     @Autowired
     private lateinit var userRepository: UserRepository
 
-    override fun register(registerInputData: RegisterInputData){
-        val hashPassword = passwordCrypto.hashPassword(registerInputData.password)
-        val user = User(email = registerInputData.email, hashPassword = hashPassword)
+    override fun register(registerUserInputData: RegisterUserInputData){
+        val hashPassword = passwordCrypto.hashPassword(registerUserInputData.password)
+        val user = User(email = registerUserInputData.email, hashPassword = hashPassword)
         try {
             userRepository.save(user)
         } catch (e: DataIntegrityViolationException){

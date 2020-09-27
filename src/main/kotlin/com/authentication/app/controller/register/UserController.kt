@@ -1,9 +1,8 @@
 package com.authentication.app.controller.register
 
 import com.authentication.app.controller.register.model.request.RegisterRequest
-import com.authentication.app.domain.ERROR_DUPLICATE_EMAIL
-import com.authentication.app.domain.usecase.register.RegisterInputData
-import com.authentication.app.domain.usecase.register.RegisterService
+import com.authentication.app.domain.usecase.register.RegisterUserInputData
+import com.authentication.app.domain.usecase.register.RegisterUserService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.*
@@ -15,17 +14,17 @@ import java.lang.IllegalArgumentException
  */
 @RestController
 @RequestMapping("/api")
-class RegisterController {
+class UserController {
 
     @Autowired
-    private lateinit var registerService: RegisterService
+    private lateinit var registerUserService: RegisterUserService
 
     @PostMapping("/register")
     @ResponseStatus(HttpStatus.CREATED)
     fun register(@RequestBody registerRequest: RegisterRequest){
-        val inputData = RegisterInputData(registerRequest.email, registerRequest.password)
+        val inputData = RegisterUserInputData(registerRequest.email, registerRequest.password)
         try {
-            registerService.register(inputData)
+            registerUserService.register(inputData)
         } catch (e: IllegalArgumentException){
             throw ResponseStatusException(HttpStatus.CONFLICT, e.message)
         }
