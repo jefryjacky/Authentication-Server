@@ -24,6 +24,8 @@ dependencies {
 	implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
 	implementation("org.springframework.security:spring-security-crypto")
 	implementation ("com.google.code.gson:gson:2.8.6")
+	implementation("org.springframework.boot:spring-boot-starter-mail:2.2.5.RELEASE")
+	implementation("org.springframework.boot:spring-boot-starter-thymeleaf:2.3.3.RELEASE")
 	runtimeOnly("mysql:mysql-connector-java")
 	testImplementation("org.springframework.boot:spring-boot-starter-test") {
 		exclude(group = "org.junit.vintage", module = "junit-vintage-engine")
