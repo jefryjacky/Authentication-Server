@@ -1,4 +1,4 @@
-package com.authentication.app.domain.usecase.password
+package com.authentication.app.domain.usecase.password.updatePasswordByCredential
 
 import com.authentication.app.domain.repository.RefreshTokenRepository
 import com.authentication.app.domain.repository.UserRepository
@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service
  * Created by Jefry Jacky on 27/09/20.
  */
 @Service
-class UpdatePasswordServiceImpl:UpdatePasswordService {
+class UpdatePasswordByCredentialServiceImpl: UpdatePasswordByCredentialService {
 
     @Autowired
     private lateinit var refreshTokenRepository: RefreshTokenRepository

@@ -1,6 +1,6 @@
 package com.authentication.app.controller.password
 
-import com.authentication.app.domain.usecase.password.UpdatePasswordService
+import com.authentication.app.domain.usecase.password.updatePasswordByCredential.UpdatePasswordByCredentialService
 import com.authentication.app.domain.usecase.password.resetpassword.ResetPasswordService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
@@ -20,7 +20,7 @@ import org.springframework.web.server.ResponseStatusException
 class PasswordController {
 
     @Autowired
-    private lateinit var updatePasswordService:UpdatePasswordService
+    private lateinit var updatePasswordByCredentialService: UpdatePasswordByCredentialService
     @Autowired
     private lateinit var resetPasswordService:ResetPasswordService
 
@@ -32,7 +32,7 @@ class PasswordController {
 
         if(!userId.isNullOrBlank() || !password.isNullOrBlank() || !newPassword.isNullOrBlank()){
             try {
-                updatePasswordService.updatePassword(userId!!.toLong(), password!!, newPassword!!)
+                updatePasswordByCredentialService.updatePassword(userId!!.toLong(), password!!, newPassword!!)
                 return
             } catch (e: IllegalAccessException){
                 throw ResponseStatusException(HttpStatus.FORBIDDEN)
