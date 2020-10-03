@@ -29,10 +29,28 @@ class MailUtilImpl: MailUtil {
         context.setVariable("name", name)
         context.setVariable("reset_link", link)
         val htmlContent = templateEngine.process("ResetEmailTemplate", context)
-        helper.setFrom("noreply@gmail.com")
+        helper.setFrom(EMAIL_FROM)
         helper.setSubject("Reset Password")
         helper.setTo(email)
         helper.setText(htmlContent, true)
         mail.send(mimeMessage)
+    }
+
+    override fun sendEmailVerification(email: String, link: String, name: String) {
+        val mimeMessage = mail.createMimeMessage()
+        val helper = MimeMessageHelper(mimeMessage)
+        val context= Context(Locale.getDefault())
+        context.setVariable("name", name)
+        context.setVariable("verification_link", link)
+        val htmlContent = templateEngine.process("EmailVerificationTemplate", context)
+        helper.setFrom(EMAIL_FROM)
+        helper.setSubject("Email verification")
+        helper.setTo(email)
+        helper.setText(htmlContent, true)
+        mail.send(mimeMessage)
+    }
+
+    companion object{
+        private const val EMAIL_FROM = "noreply@gmail.com"
     }
 }

@@ -18,9 +18,10 @@ class UserRepositoryImpl: UserRepository {
     @Autowired
     private lateinit var jpaUserRepository: JpaUserRepository
 
-    override fun save(user: User) {
-        val userDb = userDbMapper.mapFromEntity(user)
-        jpaUserRepository.save(userDb)
+    override fun save(user: User): User {
+        var userDb = userDbMapper.mapFromEntity(user)
+        userDb = jpaUserRepository.save(userDb)
+        return userDbMapper.mapToEntity(userDb)
     }
 
     override fun getUser(email: String): User {

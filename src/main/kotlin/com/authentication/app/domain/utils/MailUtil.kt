@@ -5,4 +5,5 @@ package com.authentication.app.domain.utils
  */
 interface MailUtil {
     fun sendResetPassword(email:String, link:String, name: String)
+    fun sendEmailVerification(email:String, link:String, name: String)
 }

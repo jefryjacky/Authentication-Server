@@ -1,0 +1,12 @@
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+<p th:text="|Dear Sir/Madam ${name},|"></p>
+
+<p>Please click this <a th:href="${verification_link}">link</a> for verify your email.
+    This link will be valid for 1 hour after this email sent.</p>
+<p>
+    Regards, <br />
+    <em>Team</em>
+</p>
+</body>
+</html>

@@ -9,7 +9,7 @@ import java.util.*
  */
 abstract class JWT {
 
-    @Value("\${jwt_secret}")
+    @Value("\${jwt.secret}")
     protected val jwtSecret: String? = null
 
     private val encoder = Base64.getEncoder()
