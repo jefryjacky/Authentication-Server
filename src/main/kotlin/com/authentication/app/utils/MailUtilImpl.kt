@@ -30,7 +30,7 @@ class MailUtilImpl: MailUtil {
         context.setVariable("reset_link", link)
         val htmlContent = templateEngine.process("ResetEmailTemplate", context)
         helper.setFrom("noreply@gmail.com")
-        helper.setSubject("Reset Email")
+        helper.setSubject("Reset Password")
         helper.setTo(email)
         helper.setText(htmlContent, true)
         mail.send(mimeMessage)

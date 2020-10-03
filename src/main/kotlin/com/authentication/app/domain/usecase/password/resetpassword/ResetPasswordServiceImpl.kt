@@ -24,7 +24,7 @@ class ResetPasswordServiceImpl:ResetPasswordService {
     override fun reset(email: String, link: String) {
         val user = userRepository.getUser(email)
         if(user != null) {
-            val expired = System.currentTimeMillis() + 3600 * 1000
+            val expired = System.currentTimeMillis() + 10 * 60 * 1000
             val resetPayload = ResetPayload(user.userId, expired)
             val json = Gson().toJson(resetPayload)
             val token = encryptor.encrypt(json)
