@@ -1,4 +1,4 @@
-package com.authentication.app.domain.usecase.password.resetpassword
+package com.authentication.app.domain.usecase.password
 
 import com.google.gson.annotations.SerializedName
 

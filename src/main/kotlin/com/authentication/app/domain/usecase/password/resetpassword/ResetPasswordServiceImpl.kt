@@ -1,6 +1,7 @@
 package com.authentication.app.domain.usecase.password.resetpassword
 
 import com.authentication.app.domain.repository.UserRepository
+import com.authentication.app.domain.usecase.password.ResetPayload
 import com.authentication.app.domain.utils.Encryptor
 import com.authentication.app.domain.utils.MailUtil
 import com.google.gson.Gson

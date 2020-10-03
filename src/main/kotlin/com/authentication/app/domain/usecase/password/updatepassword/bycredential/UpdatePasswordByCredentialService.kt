@@ -1,4 +1,4 @@
-package com.authentication.app.domain.usecase.password.updatePasswordByCredential
+package com.authentication.app.domain.usecase.password.updatepassword.bycredential
 
 /**
  * Created by Jefry Jacky on 27/09/20.

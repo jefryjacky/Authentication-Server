@@ -1,7 +1,8 @@
-package com.authentication.app.domain.usecase.password.updatePasswordByCredential
+package com.authentication.app.domain.usecase.password.updatepassword.bycredential
 
 import com.authentication.app.domain.repository.RefreshTokenRepository
 import com.authentication.app.domain.repository.UserRepository
+import com.authentication.app.domain.usecase.password.UpdatePasswordService
 import com.authentication.app.domain.utils.PasswordCrypto
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
@@ -13,7 +14,7 @@ import org.springframework.stereotype.Service
 class UpdatePasswordByCredentialServiceImpl: UpdatePasswordByCredentialService {
 
     @Autowired
-    private lateinit var refreshTokenRepository: RefreshTokenRepository
+    private lateinit var updatePasswordService: UpdatePasswordService
     @Autowired
     private lateinit var passwordCrypto: PasswordCrypto
     @Autowired
@@ -22,9 +23,7 @@ class UpdatePasswordByCredentialServiceImpl: UpdatePasswordByCredentialService {
     override fun updatePassword(userId: Long, password: String, newPassword: String) {
         val user = userRepository.getUserById(userId)
         if(user != null && passwordCrypto.matchPassword(password, user.hashPassword)){
-            val newPasswordHashed = passwordCrypto.hashPassword(newPassword)
-            userRepository.updatePassword(newPasswordHashed, userId)
-            refreshTokenRepository.deleteTokenByUserId(userId)
+            updatePasswordService.updatePassword(userId, newPassword)
             return
         }
         throw IllegalAccessException()

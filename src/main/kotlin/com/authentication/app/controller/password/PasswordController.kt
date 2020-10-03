@@ -1,7 +1,8 @@
 package com.authentication.app.controller.password
 
-import com.authentication.app.domain.usecase.password.updatePasswordByCredential.UpdatePasswordByCredentialService
+import com.authentication.app.domain.usecase.password.updatepassword.bycredential.UpdatePasswordByCredentialService
 import com.authentication.app.domain.usecase.password.resetpassword.ResetPasswordService
+import com.authentication.app.domain.usecase.password.updatepassword.bytoken.UpdatePasswordByToken
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
@@ -20,6 +21,8 @@ import org.springframework.web.server.ResponseStatusException
 class PasswordController {
 
     @Autowired
+    private lateinit var updatePasswordByToken: UpdatePasswordByToken
+    @Autowired
     private lateinit var updatePasswordByCredentialService: UpdatePasswordByCredentialService
     @Autowired
     private lateinit var resetPasswordService:ResetPasswordService
@@ -29,16 +32,20 @@ class PasswordController {
         val userId = map.getFirst(USERID_PARAM)
         val password = map.getFirst(PASSWORD_PARAM)
         val newPassword = map.getFirst(NEW_PASSWORD)
+        val token = map.getFirst(UPDATE_PASSWORD_TOKEN)
 
-        if(!userId.isNullOrBlank() || !password.isNullOrBlank() || !newPassword.isNullOrBlank()){
-            try {
-                updatePasswordByCredentialService.updatePassword(userId!!.toLong(), password!!, newPassword!!)
+        try {
+            if(!userId.isNullOrBlank() && !password.isNullOrBlank() && !newPassword.isNullOrBlank()){
+                updatePasswordByCredentialService.updatePassword(userId.toLong(), password, newPassword)
                 return
-            } catch (e: IllegalAccessException){
-                throw ResponseStatusException(HttpStatus.FORBIDDEN)
+            } else if(!token.isNullOrBlank() && !newPassword.isNullOrBlank()){
+                updatePasswordByToken.updatePassword(token, newPassword)
+                return
             }
+        } catch (e: IllegalAccessException){
+            throw ResponseStatusException(HttpStatus.FORBIDDEN)
         }
-
+        
         throw ResponseStatusException(HttpStatus.BAD_REQUEST)
     }
 
@@ -59,5 +66,6 @@ class PasswordController {
         private const val RESET_LINK = "reset_link"
         private const val PASSWORD_PARAM = "password"
         private const val NEW_PASSWORD = "new_password"
+        private const val UPDATE_PASSWORD_TOKEN = "token"
     }
 }
