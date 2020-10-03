@@ -1,4 +1,4 @@
-package com.authentication.app.domain.usecase.user
+package com.authentication.app.domain.usecase.user.registeruser
 
 /**
  * Created by Jefry Jacky on 23/08/20.
