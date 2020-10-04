@@ -12,16 +12,19 @@ abstract class JWT {
     @Value("\${jwt.secret}")
     protected val jwtSecret: String? = null
 
-    private val encoder = Base64.getEncoder()
+    protected val encoder = Base64.getEncoder()
+    protected val decoder = Base64.getDecoder()
     protected val gson = Gson()
 
     protected abstract fun createHeader(): String
     protected abstract fun createSignature(encodedHeader: String, encodedPayload:String):ByteArray
 
-    fun<T> generate(payload: T): String{
+    fun<T> encode(payload: T): String{
         val encodedHeader = encoder.encodeToString(createHeader().toByteArray())
         val encodedPayload = encoder.encodeToString(gson.toJson(payload).toByteArray())
         val encodedSignature = encoder.encodeToString(createSignature(encodedHeader, encodedPayload))
         return "$encodedHeader.$encodedPayload.$encodedSignature"
     }
+
+    abstract fun decodeToString(jwt: String): String
 }

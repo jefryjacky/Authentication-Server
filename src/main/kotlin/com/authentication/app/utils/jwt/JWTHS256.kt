@@ -1,6 +1,10 @@
 package com.authentication.app.utils.jwt
 
+import com.authentication.app.domain.usecase.JWTPayload
+import com.google.gson.Gson
 import org.springframework.stereotype.Service
+import java.lang.IllegalArgumentException
+import java.util.*
 import javax.crypto.Mac
 import javax.crypto.spec.SecretKeySpec
 
@@ -21,6 +25,23 @@ internal class JWTHS256: JWT() {
         mac.init(secretKeySpec)
         val data = "$encodedHeader.$encodedPayload"
         return mac.doFinal(data.toByteArray())
+    }
+
+    override fun decodeToString(jwt: String): String {
+        val secretKey = jwtSecret!!.toByteArray()
+        val mac = Mac.getInstance("HmacSHA256")
+        val secretKeySpec = SecretKeySpec(secretKey, "HmacSHA256")
+        mac.init(secretKeySpec)
+        val split = jwt.split(".")
+        val encodedHeader = split[0]
+        val encodedPayload = split[1]
+        val signature = split[2]
+        val data = "$encodedHeader.$encodedPayload"
+        val expectedSignature = encoder.encodeToString(mac.doFinal(data.toByteArray()))
+        if(expectedSignature == signature){
+            return String(decoder.decode(encodedPayload))
+        }
+        throw IllegalArgumentException("invalid token")
     }
 
     companion object{
