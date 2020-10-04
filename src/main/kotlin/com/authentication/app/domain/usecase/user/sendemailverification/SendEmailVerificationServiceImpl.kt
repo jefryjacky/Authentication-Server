@@ -3,12 +3,16 @@ package com.authentication.app.domain.usecase.user.sendemailverification
 import com.authentication.app.domain.TokenType
 import com.authentication.app.domain.entity.User
 import com.authentication.app.domain.repository.UserRepository
+import com.authentication.app.domain.usecase.user.EmailVerificationPayload
 import com.authentication.app.domain.utils.Encryptor
 import com.authentication.app.domain.utils.MailUtil
 import com.google.gson.Gson
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
+import java.net.URL
+import java.net.URLEncoder
+import java.nio.charset.StandardCharsets
 
 /**
  * Created by Jefry Jacky on 03/10/20.
@@ -21,7 +25,7 @@ class SendEmailVerificationServiceImpl:SendEmailVerificationService {
     private lateinit var userRepository: UserRepository
     @Autowired
     private lateinit var mailUtil: MailUtil
-    @Value("\${server.url}")
+    @Value("\${email_verification.host}")
     lateinit var link:String
 
     override fun send(user: User) {
@@ -32,7 +36,7 @@ class SendEmailVerificationServiceImpl:SendEmailVerificationService {
                 expired)
         val json = Gson().toJson(payload)
         val token = encryptor.encrypt(json)
-        val verifyLink = "$link/emailverification/?token=$token"
+        val verifyLink = "$link?token=${URLEncoder.encode(token, StandardCharsets.UTF_8.toString())}"
         mailUtil.sendEmailVerification(user.email, verifyLink, "")
     }
 }

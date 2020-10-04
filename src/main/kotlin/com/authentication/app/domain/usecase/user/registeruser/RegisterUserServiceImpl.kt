@@ -25,7 +25,7 @@ class RegisterUserServiceImpl: RegisterUserService {
 
     override fun register(registerUserInputData: RegisterUserInputData){
         val hashPassword = passwordCrypto.hashPassword(registerUserInputData.password)
-        var user = User(email = registerUserInputData.email, hashPassword = hashPassword)
+        var user = User(email = registerUserInputData.email, hashPassword = hashPassword, emailverified = false)
         try {
             user= userRepository.save(user)
             sendEmailVerification.send(user)

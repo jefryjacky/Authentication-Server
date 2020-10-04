@@ -13,7 +13,7 @@ class AESGCMEncryptorTest {
 
     @Test
     fun encryptTest(){
-        val plainText = "Hello word"
+        val plainText = "{\"token_type\":\"EMAIL_VERIFICATION\",\"user_id\":26,\"expired\":1601797360242}"
         val cipherText = encryptor.encrypt(plainText)
         val decipherText = encryptor.decrypt(cipherText)
         Assertions.assertEquals(plainText, decipherText)

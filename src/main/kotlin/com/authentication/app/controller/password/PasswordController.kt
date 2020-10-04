@@ -52,9 +52,8 @@ class PasswordController {
     @PostMapping("/reset",  consumes = [MediaType.APPLICATION_FORM_URLENCODED_VALUE])
     fun resetPassword(@RequestParam map: MultiValueMap<String, String>){
         val email = map.getFirst(EMAIL_PARAM)
-        val resetLink = map.getFirst(RESET_LINK)
-        if(!email.isNullOrBlank() && !resetLink.isNullOrBlank()){
-            resetPasswordService.reset(email, resetLink)
+        if(!email.isNullOrBlank()){
+            resetPasswordService.reset(email)
             return
         }
         throw ResponseStatusException(HttpStatus.BAD_REQUEST)
@@ -63,7 +62,6 @@ class PasswordController {
     companion object{
         private const val USERID_PARAM = "user_id"
         private const val EMAIL_PARAM = "email"
-        private const val RESET_LINK = "reset_link"
         private const val PASSWORD_PARAM = "password"
         private const val NEW_PASSWORD = "new_password"
         private const val UPDATE_PASSWORD_TOKEN = "token"

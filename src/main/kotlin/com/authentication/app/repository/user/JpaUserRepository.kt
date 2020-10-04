@@ -17,4 +17,9 @@ interface JpaUserRepository: JpaRepository<UserDB, Long> {
     @Modifying
     @Query("UPDATE UserDB SET hashPassword = :password WHERE userId = :userId")
     fun updatePassword(@Param("password") newPasswordHashed: String, @Param("userId") userId: Long)
+
+    @Transactional
+    @Modifying
+    @Query("UPDATE UserDB SET emailVerified=1 WHERE userId = :userId")
+    fun updateEmailVerified(@Param("userId") userId: Long)
 }

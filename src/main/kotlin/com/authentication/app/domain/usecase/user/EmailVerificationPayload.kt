@@ -1,4 +1,4 @@
-package com.authentication.app.domain.usecase.user.sendemailverification
+package com.authentication.app.domain.usecase.user
 
 import com.google.gson.annotations.SerializedName
 

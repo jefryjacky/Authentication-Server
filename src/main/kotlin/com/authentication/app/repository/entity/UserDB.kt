@@ -12,5 +12,6 @@ data class UserDB (
         val userId: Long,
         @Column(unique = true)
         val email: String,
-        val hashPassword: String
+        val hashPassword: String,
+        val emailVerified: Boolean
 )

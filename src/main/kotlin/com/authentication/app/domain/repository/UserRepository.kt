@@ -10,4 +10,5 @@ interface UserRepository {
     fun getUser(email: String): User
     fun getUserById(userId:Long): User?
     fun updatePassword(password: String, userId: Long)
+    fun updateEmailVerified(userId: Long)
 }

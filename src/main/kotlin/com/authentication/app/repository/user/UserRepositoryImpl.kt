@@ -40,4 +40,9 @@ class UserRepositoryImpl: UserRepository {
     override fun updatePassword(password: String, userId: Long) {
         jpaUserRepository.updatePassword(password, userId)
     }
+
+    override fun updateEmailVerified(userId: Long) {
+        jpaUserRepository.updateEmailVerified(userId)
+        jpaUserRepository.flush()
+    }
 }
