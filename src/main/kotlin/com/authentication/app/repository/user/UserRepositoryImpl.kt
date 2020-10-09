@@ -24,9 +24,12 @@ class UserRepositoryImpl: UserRepository {
         return userDbMapper.mapToEntity(userDb)
     }
 
-    override fun getUser(email: String): User {
-        val userDb = jpaUserRepository.findByEmail(email)
-        return userDbMapper.mapToEntity(userDb)
+    override fun getUser(email: String): User? {
+        val userDbOpt = jpaUserRepository.findByEmail(email)
+        if(userDbOpt.isPresent) {
+            return userDbMapper.mapToEntity(userDbOpt.get())
+        }
+        return null
     }
 
     override fun getUserById(userId: Long): User? {
