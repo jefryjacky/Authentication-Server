@@ -19,9 +19,9 @@ abstract class JWT {
     protected abstract fun createHeader(): String
     protected abstract fun createSignature(encodedHeader: String, encodedPayload:String):ByteArray
 
-    fun<T> encode(payload: T): String{
+    fun encode(payload: String): String{
         val encodedHeader = encoder.encodeToString(createHeader().toByteArray())
-        val encodedPayload = encoder.encodeToString(gson.toJson(payload).toByteArray())
+        val encodedPayload = encoder.encodeToString(payload.toByteArray())
         val encodedSignature = encoder.encodeToString(createSignature(encodedHeader, encodedPayload))
         return "$encodedHeader.$encodedPayload.$encodedSignature"
     }

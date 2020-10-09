@@ -11,13 +11,13 @@ import org.springframework.stereotype.Service
 class JWTEncoderImpl: JWTEncoder {
 
     @Autowired
-    private val jwt: JWT? = null
+    private lateinit var jwt: JWT
 
-    override fun<T> encode(payload: T): String {
-        return jwt!!.encode(payload)
+    override fun encode(payload: String): String {
+        return jwt.encode(payload)
     }
 
     override fun decodeToString(token: String): String {
-        return jwt!!.decodeToString(token)
+        return jwt.decodeToString(token)
     }
 }

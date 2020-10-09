@@ -2,16 +2,13 @@ package com.authentication.app.domain.usecase.oauth
 
 import com.authentication.app.domain.ACCESS_TOKEN_EXPIRED_DURATION
 import com.authentication.app.domain.REFRESH_TOKEN_LENGTH
+import com.authentication.app.domain.entity.JwtPayload
 import com.authentication.app.domain.entity.RefreshToken
 import com.authentication.app.domain.repository.RefreshTokenRepository
 import com.authentication.app.domain.repository.UserRepository
-import com.authentication.app.domain.usecase.JWTPayload
 import com.authentication.app.domain.usecase.oauth.inputdata.CredentialData
 import com.authentication.app.domain.usecase.oauth.ouputdata.TokenData
-import com.authentication.app.domain.utils.JWTEncoder
-import com.authentication.app.domain.utils.TokenGenerator
-import com.authentication.app.domain.utils.PasswordCrypto
-import com.authentication.app.domain.utils.TokenEncoder
+import com.authentication.app.domain.utils.*
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 
@@ -32,6 +29,8 @@ class OAuthServiceImpl: OAuthService {
     private lateinit var tokenEncoder: TokenEncoder
     @Autowired
     private lateinit var jwtEncoder: JWTEncoder
+    @Autowired
+    private lateinit var jsonUtil: JsonUtil
 
     override fun requestAccessToken(credential: CredentialData): TokenData {
         val user = userRepository.getUser(credential.email)
@@ -57,8 +56,8 @@ class OAuthServiceImpl: OAuthService {
         if(localRefreshToken != null && localRefreshToken.token == refreshToken.token){
             val issueDate = System.currentTimeMillis()
             val expiredDate = issueDate + ACCESS_TOKEN_EXPIRED_DURATION
-            val payload = JWTPayload(localRefreshToken.userId, issueDate, expiredDate)
-            val jwt = jwtEncoder.encode(payload)
+            val payload = JwtPayload(localRefreshToken.userId, issueDate, expiredDate)
+            val jwt = jwtEncoder.encode(jsonUtil.toJson(payload))
             val encodeRefreshToken = tokenEncoder.encode(refreshToken.id, refreshToken.token)
             return TokenData(jwt, encodeRefreshToken, expiredDate)
         } else{

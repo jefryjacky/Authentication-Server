@@ -1,10 +1,7 @@
 package com.authentication.app.utils.jwt
 
-import com.authentication.app.domain.usecase.JWTPayload
-import com.google.gson.Gson
 import org.springframework.stereotype.Service
 import java.lang.IllegalArgumentException
-import java.util.*
 import javax.crypto.Mac
 import javax.crypto.spec.SecretKeySpec
 

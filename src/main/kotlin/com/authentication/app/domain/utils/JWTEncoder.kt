@@ -6,6 +6,6 @@ import com.google.gson.JsonElement
  * Created by Jefry Jacky on 16/09/20.
  */
 interface JWTEncoder {
-    fun<T> encode(payload:T):String
+    fun encode(payload:String):String
     fun decodeToString(jwt: String):String
 }
