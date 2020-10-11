@@ -1,6 +1,5 @@
 package com.authentication.app.controller.user
 
-import com.authentication.app.controller.user.model.request.RegisterRequest
 import com.authentication.app.controller.user.model.response.GetUserResponse
 import com.authentication.app.domain.usecase.user.getuser.GetUserService
 import com.authentication.app.domain.usecase.user.registeruser.RegisterUserInputData
@@ -18,7 +17,7 @@ import java.lang.IllegalArgumentException
  * Created by Jefry Jacky on 23/08/20.
  */
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/user")
 class UserController {
 
     @Autowired
@@ -28,15 +27,21 @@ class UserController {
     @Autowired
     private lateinit var getUserService: GetUserService
 
-    @PostMapping("/register")
+    @PostMapping("/register", consumes = [MediaType.APPLICATION_FORM_URLENCODED_VALUE])
     @ResponseStatus(HttpStatus.CREATED)
-    fun register(@RequestBody registerRequest: RegisterRequest){
-        val inputData = RegisterUserInputData(registerRequest.email, registerRequest.password)
-        try {
-            registerUserService.register(inputData)
-        } catch (e: IllegalArgumentException){
-            throw ResponseStatusException(HttpStatus.CONFLICT, e.message)
+    fun register(@RequestParam param: MultiValueMap<String, String>){
+        val email = param.getFirst(EMAIL_PARAM)
+        val password = param.getFirst(PASSWORD_PARAM)
+        if(!email.isNullOrBlank() && !password.isNullOrBlank()) {
+            val inputData = RegisterUserInputData(email, password)
+            try {
+                registerUserService.register(inputData)
+                return
+            } catch (e: IllegalArgumentException) {
+                throw ResponseStatusException(HttpStatus.CONFLICT, e.message)
+            }
         }
+        throw ResponseStatusException(HttpStatus.BAD_REQUEST)
     }
 
     @PostMapping("/emailverification", consumes = [MediaType.APPLICATION_FORM_URLENCODED_VALUE])
@@ -53,7 +58,7 @@ class UserController {
         throw ResponseStatusException(HttpStatus.BAD_REQUEST)
     }
 
-    @GetMapping("/user")
+    @GetMapping("/get")
     fun getUser(@RequestHeader("Authorization") token: String): GetUserResponse{
         if(token.isNotBlank()){
             try {
@@ -70,5 +75,7 @@ class UserController {
 
     companion object{
         private const val TOKEN_PARAM = "token"
+        private const val EMAIL_PARAM = "email"
+        private const val PASSWORD_PARAM = "password"
     }
 }
