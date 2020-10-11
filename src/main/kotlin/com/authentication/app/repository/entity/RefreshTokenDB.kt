@@ -1,14 +1,12 @@
 package com.authentication.app.repository.entity
 
-import javax.persistence.Entity
-import javax.persistence.GeneratedValue
-import javax.persistence.GenerationType
-import javax.persistence.Id
+import javax.persistence.*
 
 /**
  * Created by Jefry Jacky on 06/09/20.
  */
 @Entity
+@Table(name = "refreshtoken")
 data class RefreshTokenDB(
         @Id
         @GeneratedValue(strategy = GenerationType.AUTO)
