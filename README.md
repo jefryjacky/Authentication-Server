@@ -95,7 +95,7 @@ Response HTTP 200
 ```json
 {
     "user_id": 1,
-    "email": "jefryjacky@gmail.com",
+    "email": "test@gmail.com",
     "email_verified": false
 }
 ```
