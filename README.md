@@ -100,7 +100,7 @@ Response HTTP 200
 }
 ```
 
-#Enviroment
+# Enviroment
 
 ```
 DATABASE_SERVER_URL = your database url
