@@ -1,5 +1,5 @@
 # Authentication-Server
-Server application for login and register user.
+Server application for register user and request token for login.
 
 
 # Usage
