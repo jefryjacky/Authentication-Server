@@ -7,6 +7,8 @@ import com.authentication.app.domain.utils.JsonUtil
 import com.google.gson.Gson
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
+import java.net.URLDecoder
+import java.nio.charset.StandardCharsets
 
 /**
  * Created by Jefry Jacky on 02/10/20.
@@ -22,7 +24,7 @@ class UpdatePasswordByTokenImpl:UpdatePasswordByToken {
     private lateinit var jsonUtil: JsonUtil
 
     override fun updatePassword(token: String, newPassword: String) {
-        val payloadString = encryptor.decrypt(token)
+        val payloadString = encryptor.decrypt(URLDecoder.decode(token, StandardCharsets.UTF_8.toString()))
         val payload = jsonUtil.parseJsonToResetEmailPayload(payloadString)
         val userId = payload.userId
         val expired = payload.expired
