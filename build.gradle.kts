@@ -26,6 +26,9 @@ dependencies {
 	implementation ("com.google.code.gson:gson:2.8.6")
 	implementation("org.springframework.boot:spring-boot-starter-mail:2.2.5.RELEASE")
 	implementation("org.springframework.boot:spring-boot-starter-thymeleaf:2.3.3.RELEASE")
+	implementation("org.springframework.security:spring-security-core:5.3.2.RELEASE")
+	implementation("org.springframework.security:spring-security-web:5.3.2.RELEASE")
+	implementation("org.springframework.security:spring-security-config:5.3.2.RELEASE")
 	runtimeOnly("mysql:mysql-connector-java")
 	testImplementation("org.springframework.boot:spring-boot-starter-test") {
 		exclude(group = "org.junit.vintage", module = "junit-vintage-engine")
