@@ -7,6 +7,8 @@ import com.authentication.app.domain.utils.JsonUtil
 import com.google.gson.Gson
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
+import java.net.URLDecoder
+import java.nio.charset.StandardCharsets
 
 /**
  * Created by Jefry Jacky on 03/10/20.
@@ -22,7 +24,7 @@ class VerifyEmailServiceImpl:VerifyEmailService {
     private lateinit var jsonUtil: JsonUtil
 
     override fun verify(token: String) {
-        val json = encryptor.decrypt(token)
+        val json = encryptor.decrypt(URLDecoder.decode(token, StandardCharsets.UTF_8.toString()))
         val payload = jsonUtil.parseJsonToEmailVerificationPayload(json)
         val userId = payload.userId
         val expired = payload.expired

@@ -20,9 +20,9 @@ import javax.crypto.spec.SecretKeySpec
 class AESGCMEncryptorImpl: Encryptor {
 
     @Value("\${aes.secret.key}")
-    var secretKeyString:String? = null
+    var secretKeyString:String? = ""
     @Value("\${aes.nounce.key}")
-    val nounceString:String? = null
+    var nounceString:String = ""
     private lateinit var secretKeySpec:SecretKeySpec
     private lateinit var gcmParameterSpec:GCMParameterSpec
 

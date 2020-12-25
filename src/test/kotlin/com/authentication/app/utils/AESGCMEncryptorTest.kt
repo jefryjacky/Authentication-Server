@@ -16,19 +16,17 @@ class AESGCMEncryptorTest {
 
     @Test
     fun encryptTest(){
+        val keyGenerator = KeyGenerator.getInstance("AES")
+        keyGenerator.init(128)
+        val secretKey = keyGenerator.generateKey()
+        encryptor.secretKeyString = Base64.getEncoder().encodeToString(secretKey.encoded)
+        val nounce = ByteArray(12)
+        val secureRandom = SecureRandom()
+        secureRandom.nextBytes(nounce)
+        encryptor.nounceString = Base64.getEncoder().encodeToString(nounce)
         val plainText = "{\"token_type\":\"EMAIL_VERIFICATION\",\"user_id\":26,\"expired\":1601797360242}"
         val cipherText = encryptor.encrypt(plainText)
         val decipherText = encryptor.decrypt(cipherText)
         Assertions.assertEquals(plainText, decipherText)
-    }
-
-    @Test
-    fun secretKeyk(){
-        val nounce = ByteArray(12)
-        val secureRandom = SecureRandom()
-        secureRandom.nextBytes(nounce)
-        val encode = Base64.getEncoder().encodeToString(nounce)
-        val decode = Base64.getDecoder().decode(encode)
-        Assertions.assertEquals("", encode)
     }
 }
