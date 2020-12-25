@@ -19,29 +19,32 @@ import javax.crypto.spec.SecretKeySpec
 @Scope("singleton")
 class AESGCMEncryptorImpl: Encryptor {
 
+    @Value("\${aes.secret.key}")
+    var secretKeyString:String? = null
+    @Value("\${aes.nounce.key}")
+    val nounceString:String? = null
     private lateinit var secretKeySpec:SecretKeySpec
     private lateinit var gcmParameterSpec:GCMParameterSpec
 
-    init {
-        val keyGenerator = KeyGenerator.getInstance("AES")
-        keyGenerator.init(GCM_AES_KEY_SIZE)
-        val secretKey = keyGenerator.generateKey()
-        secretKeySpec = SecretKeySpec(secretKey.encoded, "AES")
+    override fun encrypt(plainText: String): String {
+        val secretKey = Base64.getDecoder().decode(secretKeyString)
+        secretKeySpec = SecretKeySpec(secretKey, "AES")
 
-        val nounce = ByteArray(GCM_NOUNCE_LENGTH)
-        val secureRandom = SecureRandom()
-        secureRandom.nextBytes(nounce)
+        val nounce = Base64.getDecoder().decode(nounceString)
         gcmParameterSpec = GCMParameterSpec(GCM_TAG_LENGTH * 8, nounce)
 
-    }
-
-    override fun encrypt(plainText: String): String {
         val cipher = Cipher.getInstance("AES/GCM/NoPadding")
         cipher.init(Cipher.ENCRYPT_MODE, secretKeySpec, gcmParameterSpec)
         return Base64.getEncoder().encodeToString(cipher.doFinal(plainText.toByteArray()))
     }
 
     override fun decrypt(encodedCipherText: String): String {
+        val secretKey = Base64.getDecoder().decode(secretKeyString)
+        secretKeySpec = SecretKeySpec(secretKey, "AES")
+
+        val nounce = Base64.getDecoder().decode(nounceString)
+        gcmParameterSpec = GCMParameterSpec(GCM_TAG_LENGTH * 8, nounce)
+
         val cipher = Cipher.getInstance("AES/GCM/NoPadding")
         cipher.init(Cipher.DECRYPT_MODE, secretKeySpec, gcmParameterSpec)
 
