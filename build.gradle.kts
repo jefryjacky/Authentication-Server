@@ -29,7 +29,7 @@ dependencies {
 	implementation("org.springframework.security:spring-security-core:5.3.2.RELEASE")
 	implementation("org.springframework.security:spring-security-web:5.3.2.RELEASE")
 	implementation("org.springframework.security:spring-security-config:5.3.2.RELEASE")
-	runtimeOnly("mysql:mysql-connector-java")
+	runtimeOnly("org.postgresql:postgresql")
 	testImplementation("org.springframework.boot:spring-boot-starter-test") {
 		exclude(group = "org.junit.vintage", module = "junit-vintage-engine")
 	}

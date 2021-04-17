@@ -6,7 +6,7 @@ import javax.persistence.*
  * Created by Jefry Jacky on 06/09/20.
  */
 @Entity
-@Table(name = "refreshtoken")
+@Table(name = "refresh_token")
 data class RefreshTokenDB(
         @Id
         @GeneratedValue(strategy = GenerationType.AUTO)
