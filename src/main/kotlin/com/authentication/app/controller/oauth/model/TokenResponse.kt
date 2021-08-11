@@ -12,5 +12,5 @@ data class TokenResponse(
         @JsonProperty("refresh_token")
         val refreshToken: String,
         @JsonProperty("expired_date")
-        val expiredDate: String
+        val expiredDate: Long
 )

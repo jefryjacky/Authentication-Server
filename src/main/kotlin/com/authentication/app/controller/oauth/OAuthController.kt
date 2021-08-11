@@ -30,11 +30,11 @@ class OAuthController {
         try {
             if(!grantType.isNullOrBlank() && grantType == REFRESH_TOKEN_GRANT_TYPE && !refreshToken.isNullOrBlank()){
                 val tokenData = service.requestAccessToken(refreshToken)
-                return TokenResponse(tokenData.accessToken, tokenData.refreshToken, tokenData.expiredTime.toString())
+                return TokenResponse(tokenData.accessToken, tokenData.refreshToken, tokenData.expiredTime)
             } else if(!email.isNullOrBlank() && !password.isNullOrBlank()) {
                     val credential = CredentialData(email, password)
                     val tokenData = service.requestAccessToken(credential)
-                    return TokenResponse(tokenData.accessToken, tokenData.refreshToken, tokenData.expiredTime.toString())
+                    return TokenResponse(tokenData.accessToken, tokenData.refreshToken, tokenData.expiredTime)
             }
         } catch (e: IllegalAccessException){
             throw ResponseStatusException(HttpStatus.FORBIDDEN)
