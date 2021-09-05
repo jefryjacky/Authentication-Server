@@ -33,7 +33,7 @@ class OAuthServiceImpl: OAuthService {
     private lateinit var jsonUtil: JsonUtil
 
     override fun requestAccessToken(credential: CredentialData): TokenData {
-        val user = userRepository.getUser(credential.email) ?: throw IllegalAccessException()
+        val user = userRepository.getUser(credential.email) ?: throw UnAuthorizedException()
         val matched = passwordCrypto.matchPassword(credential.password, user.hashPassword)
         if(matched){
             val token = tokenGenerator.generate(REFRESH_TOKEN_LENGTH)
