@@ -2,6 +2,7 @@ package com.authentication.app.controller.oauth
 
 import com.authentication.app.controller.oauth.model.TokenResponse
 import com.authentication.app.domain.usecase.oauth.OAuthService
+import com.authentication.app.domain.usecase.oauth.UnAuthorizedException
 import com.authentication.app.domain.usecase.oauth.inputdata.CredentialData
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
@@ -36,8 +37,8 @@ class OAuthController {
                     val tokenData = service.requestAccessToken(credential)
                     return TokenResponse(tokenData.accessToken, tokenData.refreshToken, tokenData.expiredTime)
             }
-        } catch (e: IllegalAccessException){
-            throw ResponseStatusException(HttpStatus.FORBIDDEN)
+        } catch (e: UnAuthorizedException){
+            throw ResponseStatusException(HttpStatus.UNAUTHORIZED)
         }
         throw ResponseStatusException(HttpStatus.BAD_REQUEST)
     }

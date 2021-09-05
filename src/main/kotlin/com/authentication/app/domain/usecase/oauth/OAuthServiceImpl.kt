@@ -41,7 +41,7 @@ class OAuthServiceImpl: OAuthService {
             refreshToken = refreshTokenRepository.save(refreshToken)
             return requestAccessToken(refreshToken)
         } else {
-            throw IllegalAccessException()
+            throw UnAuthorizedException()
         }
     }
 
@@ -61,7 +61,7 @@ class OAuthServiceImpl: OAuthService {
             val encodeRefreshToken = tokenEncoder.encode(refreshToken.id, refreshToken.token)
             return TokenData(jwt, encodeRefreshToken, expiredDate)
         } else{
-            throw IllegalAccessException()
+            throw UnAuthorizedException()
         }
     }
 
