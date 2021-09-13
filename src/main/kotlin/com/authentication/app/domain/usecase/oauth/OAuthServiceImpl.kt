@@ -4,6 +4,7 @@ import com.authentication.app.domain.ACCESS_TOKEN_EXPIRED_DURATION
 import com.authentication.app.domain.REFRESH_TOKEN_LENGTH
 import com.authentication.app.domain.entity.JwtPayload
 import com.authentication.app.domain.entity.RefreshToken
+import com.authentication.app.domain.entity.User
 import com.authentication.app.domain.repository.RefreshTokenRepository
 import com.authentication.app.domain.repository.UserRepository
 import com.authentication.app.domain.usecase.oauth.inputdata.CredentialData
@@ -31,6 +32,8 @@ class OAuthServiceImpl: OAuthService {
     private lateinit var jwtEncoder: JWTEncoder
     @Autowired
     private lateinit var jsonUtil: JsonUtil
+    @Autowired
+    private lateinit var googleUtil: GoogleUtil
 
     override fun requestAccessToken(credential: CredentialData): TokenData {
         val user = userRepository.getUser(credential.email) ?: throw UnAuthorizedException()
@@ -65,5 +68,20 @@ class OAuthServiceImpl: OAuthService {
         }
     }
 
-
+    override fun requestAccessTokenWithGoogleToken(token: String): TokenData? {
+        val user = googleUtil.verifyToken(token) ?: return null
+        var existingUser = userRepository.getUser(user.email)
+        if (existingUser == null) {
+            val newUser = User(
+                email = user.email,
+                hashPassword = passwordCrypto.hashPassword(passwordCrypto.generateNewPassword(12)),
+                emailverified = user.emailverified
+            )
+            existingUser = userRepository.save(newUser)
+        }
+        val token = tokenGenerator.generate(REFRESH_TOKEN_LENGTH)
+        var refreshToken = RefreshToken(userId = existingUser.userId, token = token)
+        refreshToken = refreshTokenRepository.save(refreshToken)
+        return requestAccessToken(refreshToken)
+    }
 }

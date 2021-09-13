@@ -10,4 +10,5 @@ import com.authentication.app.domain.usecase.oauth.ouputdata.TokenData
 interface OAuthService {
     fun requestAccessToken(credential: CredentialData): TokenData
     fun requestAccessToken(refreshToken: String): TokenData
+    fun requestAccessTokenWithGoogleToken(token: String): TokenData?
 }
