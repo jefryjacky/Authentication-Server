@@ -23,12 +23,13 @@ class RegisterUserServiceImpl: RegisterUserService {
     @Autowired
     private lateinit var sendEmailVerification: SendEmailVerificationService
 
-    override fun register(registerUserInputData: RegisterUserInputData){
+    override fun register(registerUserInputData: RegisterUserInputData):User{
         val hashPassword = passwordCrypto.hashPassword(registerUserInputData.password)
         var user = User(email = registerUserInputData.email, hashPassword = hashPassword, emailverified = false)
         try {
             user= userRepository.save(user)
             sendEmailVerification.send(user)
+            return user
         } catch (e: DataIntegrityViolationException){
             throw IllegalArgumentException(ERROR_DUPLICATE_EMAIL)
         }

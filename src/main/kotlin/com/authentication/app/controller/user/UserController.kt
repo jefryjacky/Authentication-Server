@@ -1,6 +1,10 @@
 package com.authentication.app.controller.user
 
+import com.authentication.app.controller.oauth.model.TokenResponse
 import com.authentication.app.controller.user.model.response.GetUserResponse
+import com.authentication.app.controller.user.model.response.RegisterResponse
+import com.authentication.app.domain.usecase.oauth.OAuthService
+import com.authentication.app.domain.usecase.oauth.inputdata.CredentialData
 import com.authentication.app.domain.usecase.user.getuser.GetUserService
 import com.authentication.app.domain.usecase.user.registeruser.RegisterUserInputData
 import com.authentication.app.domain.usecase.user.registeruser.RegisterUserService
@@ -19,7 +23,8 @@ import java.lang.IllegalArgumentException
 @RestController
 @RequestMapping("/api/user")
 class UserController {
-
+    @Autowired
+    private lateinit var oauthService : OAuthService
     @Autowired
     private lateinit var registerUserService: RegisterUserService
     @Autowired
@@ -29,14 +34,21 @@ class UserController {
 
     @PostMapping("/register", consumes = [MediaType.APPLICATION_FORM_URLENCODED_VALUE])
     @ResponseStatus(HttpStatus.CREATED)
-    fun register(@RequestParam param: MultiValueMap<String, String>){
+    fun register(@RequestParam param: MultiValueMap<String, String>): RegisterResponse{
         val email = param.getFirst(EMAIL_PARAM)
         val password = param.getFirst(PASSWORD_PARAM)
         if(!email.isNullOrBlank() && !password.isNullOrBlank()) {
             val inputData = RegisterUserInputData(email, password)
             try {
-                registerUserService.register(inputData)
-                return
+                val user = registerUserService.register(inputData)
+                val credential = CredentialData(email, password)
+                val tokenData = oauthService.requestAccessToken(credential)
+                return RegisterResponse(
+                    token = TokenResponse(tokenData.accessToken, tokenData.refreshToken, tokenData.expiredTime),
+                    user = GetUserResponse(
+                        user.userId, user.email, user.emailverified
+                    )
+                )
             } catch (e: IllegalArgumentException) {
                 throw ResponseStatusException(HttpStatus.CONFLICT, e.message)
             }
@@ -67,7 +79,7 @@ class UserController {
                         user.userId, user.email, user.emailverified
                 )
             } catch (e: IllegalAccessException){
-                throw ResponseStatusException(HttpStatus.FORBIDDEN)
+                throw ResponseStatusException(HttpStatus.UNAUTHORIZED)
             }
         }
         throw ResponseStatusException(HttpStatus.BAD_REQUEST)
