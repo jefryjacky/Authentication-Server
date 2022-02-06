@@ -8,6 +8,7 @@ import com.authentication.app.domain.usecase.oauth.inputdata.CredentialData
 import com.authentication.app.domain.usecase.user.getuser.GetUserService
 import com.authentication.app.domain.usecase.user.registeruser.RegisterUserInputData
 import com.authentication.app.domain.usecase.user.registeruser.RegisterUserService
+import com.authentication.app.domain.usecase.user.sendemailverification.SendEmailVerificationService
 import com.authentication.app.domain.usecase.user.verifyemail.VerifyEmailService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
@@ -31,6 +32,8 @@ class UserController {
     private lateinit var verifyEmailService:VerifyEmailService
     @Autowired
     private lateinit var getUserService: GetUserService
+    @Autowired
+    private lateinit var sendEmailVerification: SendEmailVerificationService
 
     @PostMapping("/register", consumes = [MediaType.APPLICATION_FORM_URLENCODED_VALUE])
     @ResponseStatus(HttpStatus.CREATED)
@@ -51,6 +54,20 @@ class UserController {
                 )
             } catch (e: IllegalArgumentException) {
                 throw ResponseStatusException(HttpStatus.CONFLICT, e.message)
+            }
+        }
+        throw ResponseStatusException(HttpStatus.BAD_REQUEST)
+    }
+
+    @PostMapping("/requestemailverification")
+    fun requestEmailVerification(@RequestHeader("Authorization") token: String) {
+        if(token.isNotBlank()) {
+            try {
+                val user = getUserService.execute(token)
+                sendEmailVerification.send(user)
+                return
+            } catch (e: IllegalAccessException) {
+                throw ResponseStatusException(HttpStatus.UNAUTHORIZED)
             }
         }
         throw ResponseStatusException(HttpStatus.BAD_REQUEST)
