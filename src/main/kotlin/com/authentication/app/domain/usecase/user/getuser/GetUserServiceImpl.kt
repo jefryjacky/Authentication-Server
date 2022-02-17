@@ -22,14 +22,18 @@ class GetUserServiceImpl: GetUserService {
     @Autowired
     private lateinit var jsonUtil: JsonUtil
 
-    override fun execute(token: String): User {
-        val payloadJsonString = jwtEncoder.decodeToString(token)
-        val payload = jsonUtil.parseJsonToJwtPayload(payloadJsonString)
-        val userId = payload.userId
-        val user = userRepository.getUserById(userId)
-        if(user != null){
-            return user
+    override fun execute(token: String?): User {
+        if(token.isNullOrBlank()){
+            throw IllegalAccessException()
+        }else {
+            val payloadJsonString = jwtEncoder.decodeToString(token)
+            val payload = jsonUtil.parseJsonToJwtPayload(payloadJsonString)
+            val userId = payload.userId
+            val user = userRepository.getUserById(userId)
+            if (user != null) {
+                return user
+            }
+            throw IllegalAccessException()
         }
-        throw IllegalAccessException()
     }
 }

@@ -61,16 +61,13 @@ class UserController {
 
     @PostMapping("/requestemailverification")
     fun requestEmailVerification(@RequestHeader("Authorization") token: String) {
-        if(token.isNotBlank()) {
-            try {
-                val user = getUserService.execute(token)
-                sendEmailVerification.send(user)
-                return
-            } catch (e: IllegalAccessException) {
-                throw ResponseStatusException(HttpStatus.UNAUTHORIZED)
-            }
+        try {
+            val user = getUserService.execute(token)
+            sendEmailVerification.send(user)
+            return
+        } catch (e: IllegalAccessException) {
+            throw ResponseStatusException(HttpStatus.UNAUTHORIZED)
         }
-        throw ResponseStatusException(HttpStatus.BAD_REQUEST)
     }
 
     @PostMapping("/emailverification", consumes = [MediaType.APPLICATION_FORM_URLENCODED_VALUE])
@@ -89,17 +86,14 @@ class UserController {
 
     @GetMapping("/get")
     fun getUser(@RequestHeader("Authorization") token: String): GetUserResponse{
-        if(token.isNotBlank()){
-            try {
-                val user = getUserService.execute(token)
-                return GetUserResponse(
-                        user.userId, user.email, user.emailverified
-                )
-            } catch (e: IllegalAccessException){
-                throw ResponseStatusException(HttpStatus.UNAUTHORIZED)
-            }
+        try {
+            val user = getUserService.execute(token)
+            return GetUserResponse(
+                user.userId, user.email, user.emailverified
+            )
+        } catch (e: IllegalAccessException){
+            throw ResponseStatusException(HttpStatus.UNAUTHORIZED)
         }
-        throw ResponseStatusException(HttpStatus.BAD_REQUEST)
     }
 
     companion object{
