@@ -6,7 +6,7 @@ data class RefreshTokenPayloadGson(
     @SerializedName("user_id")
     val userId: Long,
     @SerializedName("issue_date")
-    val issueData: Long,
+    val issueDate: Long,
     @SerializedName("type")
     val type:String,
     @SerializedName("expire_date")

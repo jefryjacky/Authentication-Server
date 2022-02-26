@@ -34,7 +34,7 @@ class JsonMapperImpl: JsonMapper {
     override fun toJson(accessTokenPayload: AccessTokenPayload): String {
         val payload = AccessTokenPayloadGson(
                 accessTokenPayload.userId,
-                accessTokenPayload.issueData,
+                accessTokenPayload.issueDate,
                 accessTokenPayload.type,
                 accessTokenPayload.expireDate
         )
@@ -44,7 +44,7 @@ class JsonMapperImpl: JsonMapper {
     override fun toJson(refreshTokenPayload: RefreshTokenPayload): String {
         val payload = AccessTokenPayloadGson(
             refreshTokenPayload.userId,
-            refreshTokenPayload.issueData,
+            refreshTokenPayload.issueDate,
             refreshTokenPayload.type,
             refreshTokenPayload.expireDate
         )
@@ -79,10 +79,10 @@ class JsonMapperImpl: JsonMapper {
     }
 
     override fun parseJsonToRefreshTokenPayload(json: String): RefreshTokenPayload {
-        val payload = gson.fromJson(json, RefreshTokenPayload::class.java)
+        val payload = gson.fromJson(json, RefreshTokenPayloadGson::class.java)
         return RefreshTokenPayload(
             payload.userId,
-            payload.issueData,
+            payload.issueDate,
             payload.type,
             payload.expireDate
         )
