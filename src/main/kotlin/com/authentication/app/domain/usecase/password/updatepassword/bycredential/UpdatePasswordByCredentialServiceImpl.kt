@@ -1,6 +1,5 @@
 package com.authentication.app.domain.usecase.password.updatepassword.bycredential
 
-import com.authentication.app.domain.repository.RefreshTokenRepository
 import com.authentication.app.domain.repository.UserRepository
 import com.authentication.app.domain.usecase.password.UpdatePasswordService
 import com.authentication.app.domain.utils.PasswordCrypto

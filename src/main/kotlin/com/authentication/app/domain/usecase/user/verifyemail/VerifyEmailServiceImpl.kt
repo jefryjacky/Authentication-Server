@@ -1,10 +1,8 @@
 package com.authentication.app.domain.usecase.user.verifyemail
 
 import com.authentication.app.domain.repository.UserRepository
-import com.authentication.app.utils.json.EmailVerificationPayloadGson
 import com.authentication.app.domain.utils.Encryptor
-import com.authentication.app.domain.utils.JsonUtil
-import com.google.gson.Gson
+import com.authentication.app.domain.utils.JsonMapper
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import java.net.URLDecoder
@@ -21,11 +19,11 @@ class VerifyEmailServiceImpl:VerifyEmailService {
     @Autowired
     private lateinit var encryptor: Encryptor
     @Autowired
-    private lateinit var jsonUtil: JsonUtil
+    private lateinit var jsonMapper: JsonMapper
 
     override fun verify(token: String) {
         val json = encryptor.decrypt(URLDecoder.decode(token, StandardCharsets.UTF_8.toString()))
-        val payload = jsonUtil.parseJsonToEmailVerificationPayload(json)
+        val payload = jsonMapper.parseJsonToEmailVerificationPayload(json)
         val userId = payload.userId
         val expired = payload.expired
         val currentTime = System.currentTimeMillis()

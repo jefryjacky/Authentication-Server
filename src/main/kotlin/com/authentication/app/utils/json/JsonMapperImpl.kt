@@ -1,9 +1,10 @@
 package com.authentication.app.utils.json
 
 import com.authentication.app.domain.entity.EmailVerificationPayload
-import com.authentication.app.domain.entity.JwtPayload
+import com.authentication.app.domain.entity.AccessTokenPayload
+import com.authentication.app.domain.entity.RefreshTokenPayload
 import com.authentication.app.domain.entity.ResetEmailPayload
-import com.authentication.app.domain.utils.JsonUtil
+import com.authentication.app.domain.utils.JsonMapper
 import com.google.gson.Gson
 import org.springframework.stereotype.Service
 
@@ -11,7 +12,7 @@ import org.springframework.stereotype.Service
  * Created by Jefry Jacky on 08/10/20.
  */
 @Service
-class JsonUtilImpl: JsonUtil {
+class JsonMapperImpl: JsonMapper {
     private val gson = Gson()
 
     override fun toJson(resetEmailPayload: ResetEmailPayload): String {
@@ -30,11 +31,22 @@ class JsonUtilImpl: JsonUtil {
         return gson.toJson(payload)
     }
 
-    override fun toJson(jwtPayload: JwtPayload): String {
-        val payload = JWTPayloadGson(
-                jwtPayload.userId,
-                jwtPayload.issueData,
-                jwtPayload.expireDate
+    override fun toJson(accessTokenPayload: AccessTokenPayload): String {
+        val payload = AccessTokenPayloadGson(
+                accessTokenPayload.userId,
+                accessTokenPayload.issueData,
+                accessTokenPayload.type,
+                accessTokenPayload.expireDate
+        )
+        return gson.toJson(payload)
+    }
+
+    override fun toJson(refreshTokenPayload: RefreshTokenPayload): String {
+        val payload = AccessTokenPayloadGson(
+            refreshTokenPayload.userId,
+            refreshTokenPayload.issueData,
+            refreshTokenPayload.type,
+            refreshTokenPayload.expireDate
         )
         return gson.toJson(payload)
     }
@@ -56,12 +68,23 @@ class JsonUtilImpl: JsonUtil {
         )
     }
 
-    override fun parseJsonToJwtPayload(json: String): JwtPayload {
-        val payload = gson.fromJson(json, JWTPayloadGson::class.java)
-        return JwtPayload(
+    override fun parseJsonToAccessTokenPayload(json: String): AccessTokenPayload {
+        val payload = gson.fromJson(json, AccessTokenPayloadGson::class.java)
+        return AccessTokenPayload(
                 payload.userId,
                 payload.issueData,
+                payload.type,
                 payload.expireDate
+        )
+    }
+
+    override fun parseJsonToRefreshTokenPayload(json: String): RefreshTokenPayload {
+        val payload = gson.fromJson(json, RefreshTokenPayload::class.java)
+        return RefreshTokenPayload(
+            payload.userId,
+            payload.issueData,
+            payload.type,
+            payload.expireDate
         )
     }
 }

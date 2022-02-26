@@ -1,17 +1,17 @@
 package com.authentication.app.domain.utils
 
-import com.authentication.app.domain.entity.EmailVerificationPayload
-import com.authentication.app.domain.entity.JwtPayload
-import com.authentication.app.domain.entity.ResetEmailPayload
+import com.authentication.app.domain.entity.*
 
 /**
  * Created by Jefry Jacky on 08/10/20.
  */
-interface JsonUtil {
+interface JsonMapper {
     fun toJson(resetEmailPayload: ResetEmailPayload): String
     fun toJson(emailVerificationPayload: EmailVerificationPayload): String
-    fun toJson(jwtPayload: JwtPayload): String
+    fun toJson(accessTokenPayload: AccessTokenPayload): String
+    fun toJson(refreshTokenPayload: RefreshTokenPayload): String
     fun parseJsonToResetEmailPayload(json:String):ResetEmailPayload
     fun parseJsonToEmailVerificationPayload(json:String):EmailVerificationPayload
-    fun parseJsonToJwtPayload(json:String):JwtPayload
+    fun parseJsonToAccessTokenPayload(json:String):AccessTokenPayload
+    fun parseJsonToRefreshTokenPayload(json:String):RefreshTokenPayload
 }
