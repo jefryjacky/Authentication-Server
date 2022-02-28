@@ -8,6 +8,7 @@ import com.authentication.app.domain.utils.MailUtil
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
+import java.lang.IllegalArgumentException
 import java.net.URLEncoder
 import java.nio.charset.StandardCharsets
 
@@ -36,6 +37,8 @@ class ResetPasswordServiceImpl:ResetPasswordService {
             val token = encryptor.encrypt(jsonMapper.toJson(resetPayload))
             val resetLink = "$link?reset_token=${URLEncoder.encode(token, StandardCharsets.UTF_8.toString())}"
             mailUtil.sendResetPassword(email, resetLink, "")
+        } else {
+            throw IllegalArgumentException("user not found")
         }
     }
 }

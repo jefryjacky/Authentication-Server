@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.server.ResponseStatusException
+import java.lang.IllegalArgumentException
 
 /**
  * Created by Jefry Jacky on 27/09/20.
@@ -53,7 +54,11 @@ class PasswordController {
     fun resetPassword(@RequestParam map: MultiValueMap<String, String>){
         val email = map.getFirst(EMAIL_PARAM)
         if(!email.isNullOrBlank()){
-            resetPasswordService.reset(email)
+            try {
+                resetPasswordService.reset(email)
+            } catch (e:IllegalArgumentException){
+                throw ResponseStatusException(HttpStatus.BAD_REQUEST, e.message)
+            }
             return
         }
         throw ResponseStatusException(HttpStatus.BAD_REQUEST)
