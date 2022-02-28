@@ -1,5 +1,6 @@
 package com.authentication.app.domain.usecase.user.getuser
 
+import com.authentication.app.domain.entity.TokenType
 import com.authentication.app.domain.entity.User
 import com.authentication.app.domain.repository.UserRepository
 import com.authentication.app.domain.utils.JWTEncoder
@@ -26,10 +27,12 @@ class GetUserServiceImpl: GetUserService {
         }else {
             val payloadJsonString = jwtEncoder.decodeToString(token)
             val payload = jsonMapper.parseJsonToAccessTokenPayload(payloadJsonString)
-            val userId = payload.userId
-            val user = userRepository.getUserById(userId)
-            if (user != null) {
-                return user
+            if(payload.type == TokenType.ACCESS) {
+                val userId = payload.userId
+                val user = userRepository.getUserById(userId)
+                if (user != null) {
+                    return user
+                }
             }
             throw IllegalAccessException()
         }

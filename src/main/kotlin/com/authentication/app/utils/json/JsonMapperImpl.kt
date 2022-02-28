@@ -1,9 +1,6 @@
 package com.authentication.app.utils.json
 
-import com.authentication.app.domain.entity.EmailVerificationPayload
-import com.authentication.app.domain.entity.AccessTokenPayload
-import com.authentication.app.domain.entity.RefreshTokenPayload
-import com.authentication.app.domain.entity.ResetEmailPayload
+import com.authentication.app.domain.entity.*
 import com.authentication.app.domain.utils.JsonMapper
 import com.google.gson.Gson
 import org.springframework.stereotype.Service
@@ -35,7 +32,7 @@ class JsonMapperImpl: JsonMapper {
         val payload = AccessTokenPayloadGson(
                 accessTokenPayload.userId,
                 accessTokenPayload.issueDate,
-                accessTokenPayload.type,
+                accessTokenPayload.type.name,
                 accessTokenPayload.expireDate
         )
         return gson.toJson(payload)
@@ -45,7 +42,7 @@ class JsonMapperImpl: JsonMapper {
         val payload = AccessTokenPayloadGson(
             refreshTokenPayload.userId,
             refreshTokenPayload.issueDate,
-            refreshTokenPayload.type,
+            refreshTokenPayload.type.name,
             refreshTokenPayload.expireDate
         )
         return gson.toJson(payload)
@@ -73,7 +70,7 @@ class JsonMapperImpl: JsonMapper {
         return AccessTokenPayload(
                 payload.userId,
                 payload.issueData,
-                payload.type,
+                TokenType.valueOf(payload.type),
                 payload.expireDate
         )
     }
@@ -83,7 +80,7 @@ class JsonMapperImpl: JsonMapper {
         return RefreshTokenPayload(
             payload.userId,
             payload.issueDate,
-            payload.type,
+            TokenType.valueOf(payload.type),
             payload.expireDate
         )
     }

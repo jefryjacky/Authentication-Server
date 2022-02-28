@@ -3,6 +3,8 @@ package com.authentication.app.domain.usecase.oauth
 import com.authentication.app.domain.ACCESS_TOKEN_EXPIRED_DURATION
 import com.authentication.app.domain.REFRESH_TOKEN_EXPIRED_DURATION
 import com.authentication.app.domain.entity.AccessTokenPayload
+import com.authentication.app.domain.entity.RefreshTokenPayload
+import com.authentication.app.domain.entity.TokenType
 import com.authentication.app.domain.entity.User
 import com.authentication.app.domain.repository.UserRepository
 import com.authentication.app.domain.usecase.oauth.inputdata.CredentialData
@@ -45,7 +47,7 @@ class OAuthServiceImpl: OAuthService {
     override fun requestAccessToken(refreshTokenString: String): TokenData {
         val payloadJsonString = jwtEncoder.decodeToString(refreshTokenString)
         val refreshTokenPayload = jsonMapper.parseJsonToRefreshTokenPayload(payloadJsonString)
-        if(refreshTokenPayload.expireDate > System.currentTimeMillis()){
+        if(refreshTokenPayload.expireDate > System.currentTimeMillis() && refreshTokenPayload.type == TokenType.REFRESH){
             val issueDate = System.currentTimeMillis()
             val expiredDate = issueDate + ACCESS_TOKEN_EXPIRED_DURATION
             val payload = AccessTokenPayload(refreshTokenPayload.userId, issueDate, expireDate = expiredDate)
@@ -75,7 +77,7 @@ class OAuthServiceImpl: OAuthService {
     private fun generateRefreshToken(userId: Long): String {
         val issueDate = System.currentTimeMillis()
         val expiredDate = issueDate + REFRESH_TOKEN_EXPIRED_DURATION
-        val payload = AccessTokenPayload(userId, issueDate, expireDate = expiredDate)
+        val payload = RefreshTokenPayload(userId, issueDate, expireDate = expiredDate)
         return jwtEncoder.encode(jsonMapper.toJson(payload))
     }
 }
