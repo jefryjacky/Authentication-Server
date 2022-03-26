@@ -73,7 +73,9 @@ class PasswordController {
             try {
                 resetPasswordService.reset(email)
             } catch (e:IllegalArgumentException){
-                throw ResponseStatusException(HttpStatus.BAD_REQUEST, e.message)
+                if(e.message == "user not found") {
+                    throw ResponseStatusException(HttpStatus.OK)
+                }
             }
             return
         }
