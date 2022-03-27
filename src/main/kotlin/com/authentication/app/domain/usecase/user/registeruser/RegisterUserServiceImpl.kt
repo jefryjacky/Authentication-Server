@@ -33,6 +33,7 @@ class RegisterUserServiceImpl: RegisterUserService {
                 } else {
                     userRepository.updatePassword(hashPassword, existingUser.userId)
                 }
+                return
             }
             throw RuntimeException()
         }
