@@ -42,19 +42,15 @@ class UserController {
         val password = param.getFirst(PASSWORD_PARAM)
         if(!email.isNullOrBlank() && !password.isNullOrBlank()) {
             val inputData = RegisterUserInputData(email, password)
-            try {
-                val user = registerUserService.register(inputData)
-                val credential = CredentialData(email, password)
-                val tokenData = oauthService.requestAccessToken(credential)
-                return RegisterResponse(
-                    token = TokenResponse(tokenData.accessToken, tokenData.refreshToken, tokenData.expiredTime),
-                    user = GetUserResponse(
-                        user.userId, user.email, user.emailverified
-                    )
+            val user = registerUserService.register(inputData)
+            val credential = CredentialData(email, password)
+            val tokenData = oauthService.requestAccessToken(credential)
+            return RegisterResponse(
+                token = TokenResponse(tokenData.accessToken, tokenData.refreshToken, tokenData.expiredTime),
+                user = GetUserResponse(
+                    user.userId, user.email, user.emailverified
                 )
-            } catch (e: IllegalArgumentException) {
-                throw ResponseStatusException(HttpStatus.CONFLICT, e.message)
-            }
+            )
         }
         throw ResponseStatusException(HttpStatus.BAD_REQUEST)
     }

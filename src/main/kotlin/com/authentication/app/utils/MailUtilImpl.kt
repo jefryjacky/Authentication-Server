@@ -22,6 +22,18 @@ class MailUtilImpl: MailUtil {
     @Autowired
     private lateinit var mail:JavaMailSender
 
+    override fun sendEmailAlreadyRegistered(email: String) {
+        val mimeMessage = mail.createMimeMessage()
+        val helper = MimeMessageHelper(mimeMessage)
+        val context= Context(Locale.getDefault())
+        val htmlContent = templateEngine.process("EmailAlreadyRegisteredTemplate.html", context)
+        helper.setFrom(EMAIL_FROM)
+        helper.setSubject("Already registered account")
+        helper.setTo(email)
+        helper.setText(htmlContent, true)
+        mail.send(mimeMessage)
+    }
+
     override fun sendResetPassword(email: String, link: String, name:String) {
         val mimeMessage = mail.createMimeMessage()
         val helper = MimeMessageHelper(mimeMessage)
