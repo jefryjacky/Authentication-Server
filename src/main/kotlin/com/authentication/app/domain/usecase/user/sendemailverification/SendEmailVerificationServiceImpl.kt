@@ -29,15 +29,19 @@ class SendEmailVerificationServiceImpl:SendEmailVerificationService {
     @Value("\${email_verification.host}")
     lateinit var link:String
 
-    override fun send(user: User) {
-        val expired = System.currentTimeMillis() + 3600 * 1000
-        val payload = EmailVerificationPayload(
+    override fun send(email: String) {
+        val user = userRepository.getUser(email)
+        if(user?.emailverified == false) {
+            val expired = System.currentTimeMillis() + 3600 * 1000
+            val payload = EmailVerificationPayload(
                 TokenType.EMAIL_VERIFICATION.toString(),
                 user.userId,
-                expired)
-        val json = jsonMapper.toJson(payload)
-        val token = encryptor.encrypt(json)
-        val verifyLink = "$link?token=${URLEncoder.encode(token, StandardCharsets.UTF_8.toString())}"
-        mailUtil.sendEmailVerification(user.email, verifyLink, "")
+                expired
+            )
+            val json = jsonMapper.toJson(payload)
+            val token = encryptor.encrypt(json)
+            val verifyLink = "$link?token=${URLEncoder.encode(token, StandardCharsets.UTF_8.toString())}"
+            mailUtil.sendEmailVerification(user.email, verifyLink, "")
+        }
     }
 }

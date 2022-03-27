@@ -74,7 +74,7 @@ class OAuthServiceImpl: OAuthService {
         return requestAccessToken(refreshToken)
     }
 
-    private fun generateRefreshToken(userId: Long): String {
+    override fun generateRefreshToken(userId: Long): String {
         val issueDate = System.currentTimeMillis()
         val expiredDate = issueDate + REFRESH_TOKEN_EXPIRED_DURATION
         val payload = RefreshTokenPayload(userId, issueDate, expireDate = expiredDate)

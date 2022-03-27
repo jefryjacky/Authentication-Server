@@ -10,4 +10,5 @@ interface OAuthService {
     fun requestAccessToken(credential: CredentialData): TokenData
     fun requestAccessToken(refreshToken: String): TokenData
     fun requestAccessTokenWithGoogleToken(token: String): TokenData?
+    fun generateRefreshToken(userId: Long): String
 }

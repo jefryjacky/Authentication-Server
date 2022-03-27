@@ -6,5 +6,5 @@ import com.authentication.app.domain.entity.User
  * Created by Jefry Jacky on 23/08/20.
  */
 interface RegisterUserService {
-    fun register(registerUserInputData: RegisterUserInputData):User
+    fun register(registerUserInputData: RegisterUserInputData)
 }

@@ -1,10 +1,8 @@
 package com.authentication.app.controller.user
 
 import com.authentication.app.controller.oauth.model.TokenResponse
-import com.authentication.app.controller.user.model.response.GetUserResponse
-import com.authentication.app.controller.user.model.response.RegisterResponse
+import com.authentication.app.controller.user.model.response.UserResponse
 import com.authentication.app.domain.usecase.oauth.OAuthService
-import com.authentication.app.domain.usecase.oauth.inputdata.CredentialData
 import com.authentication.app.domain.usecase.user.getuser.GetUserService
 import com.authentication.app.domain.usecase.user.registeruser.RegisterUserInputData
 import com.authentication.app.domain.usecase.user.registeruser.RegisterUserService
@@ -37,55 +35,41 @@ class UserController {
 
     @PostMapping("/register", consumes = [MediaType.APPLICATION_FORM_URLENCODED_VALUE])
     @ResponseStatus(HttpStatus.CREATED)
-    fun register(@RequestParam param: MultiValueMap<String, String>): RegisterResponse{
+    fun register(@RequestParam param: MultiValueMap<String, String>){
         val email = param.getFirst(EMAIL_PARAM)
         val password = param.getFirst(PASSWORD_PARAM)
         if(!email.isNullOrBlank() && !password.isNullOrBlank()) {
             val inputData = RegisterUserInputData(email, password)
-            val user = registerUserService.register(inputData)
-            val credential = CredentialData(email, password)
-            val tokenData = oauthService.requestAccessToken(credential)
-            return RegisterResponse(
-                token = TokenResponse(tokenData.accessToken, tokenData.refreshToken, tokenData.expiredTime),
-                user = GetUserResponse(
-                    user.userId, user.email, user.emailverified
-                )
-            )
+            registerUserService.register(inputData)
         }
         throw ResponseStatusException(HttpStatus.BAD_REQUEST)
     }
 
     @PostMapping("/requestemailverification")
-    fun requestEmailVerification(@RequestHeader("Authorization") token: String) {
-        try {
-            val user = getUserService.execute(token)
-            sendEmailVerification.send(user)
-            return
-        } catch (e: IllegalAccessException) {
-            throw ResponseStatusException(HttpStatus.UNAUTHORIZED)
-        }
+    fun requestEmailVerification(email: String) {
+        sendEmailVerification.send(email)
     }
 
     @PostMapping("/emailverification", consumes = [MediaType.APPLICATION_FORM_URLENCODED_VALUE])
-    fun verifyEmail(@RequestParam  map: MultiValueMap<String, String>){
+    fun verifyEmail(@RequestParam  map: MultiValueMap<String, String>): TokenResponse {
         val token = map.getFirst(TOKEN_PARAM)
         if(!token.isNullOrBlank()) {
             try {
-                verifyEmailService.verify(token)
-                return
-            } catch (e: IllegalAccessException) {
-                throw ResponseStatusException(HttpStatus.FORBIDDEN)
+                val tokenData = verifyEmailService.verify(token)
+                return TokenResponse(tokenData.accessToken, tokenData.refreshToken, tokenData.expiredTime)
+            } catch (e: IllegalArgumentException) {
+                throw ResponseStatusException(HttpStatus.BAD_REQUEST)
             }
         }
         throw ResponseStatusException(HttpStatus.BAD_REQUEST)
     }
 
     @GetMapping("/get")
-    fun getUser(@RequestHeader("Authorization") token: String): GetUserResponse{
+    fun getUser(@RequestHeader("Authorization") token: String): UserResponse{
         try {
             val user = getUserService.execute(token)
-            return GetUserResponse(
-                user.userId, user.email, user.emailverified
+            return UserResponse(
+                user.userId, user.email
             )
         } catch (e: IllegalAccessException){
             throw ResponseStatusException(HttpStatus.UNAUTHORIZED)
