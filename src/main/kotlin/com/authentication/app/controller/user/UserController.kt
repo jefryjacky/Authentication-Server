@@ -41,6 +41,7 @@ class UserController {
         if(!email.isNullOrBlank() && !password.isNullOrBlank()) {
             val inputData = RegisterUserInputData(email, password)
             registerUserService.register(inputData)
+            return
         }
         throw ResponseStatusException(HttpStatus.BAD_REQUEST)
     }
