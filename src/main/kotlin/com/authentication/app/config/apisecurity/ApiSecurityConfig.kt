@@ -10,6 +10,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy
 import org.springframework.security.web.access.ExceptionTranslationFilter
 import org.springframework.security.web.authentication.Http403ForbiddenEntryPoint
+import org.springframework.web.cors.CorsConfiguration
 
 /**
  * Created by Jefry Jacky on 25/12/20.
@@ -31,8 +32,15 @@ class ApiSecurityConfig: WebSecurityConfigurerAdapter() {
             it.isAuthenticated = true
             return@AuthenticationManager it
         })
-
-        http.antMatcher("/api/**")
+        
+      http.antMatcher("/api/**")
+            .cors().configurationSource {
+                val cors = CorsConfiguration()
+                cors.allowedOrigins = listOf("http://localhost:3000")
+                cors.allowedMethods = listOf("GET","POST", "PUT", "DELETE", "OPTIONS")
+                cors.allowedHeaders = listOf("*")
+                return@configurationSource cors
+            }.and()
                 .csrf().disable()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
