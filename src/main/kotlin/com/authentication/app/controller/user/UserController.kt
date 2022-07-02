@@ -2,19 +2,23 @@ package com.authentication.app.controller.user
 
 import com.authentication.app.controller.oauth.model.TokenResponse
 import com.authentication.app.controller.user.model.response.UserResponse
+import com.authentication.app.controller.user.model.response.UsersResponse
 import com.authentication.app.domain.usecase.oauth.OAuthService
 import com.authentication.app.domain.usecase.user.getuser.GetUserService
+import com.authentication.app.domain.usecase.user.getusers.GetUsersService
 import com.authentication.app.domain.usecase.user.registeruser.RegisterUserInputData
 import com.authentication.app.domain.usecase.user.registeruser.RegisterUserService
 import com.authentication.app.domain.usecase.user.sendemailverification.SendEmailVerificationService
 import com.authentication.app.domain.usecase.user.verifyemail.VerifyEmailService
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.data.jpa.repository.Query
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.util.MultiValueMap
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.server.ResponseStatusException
 import java.lang.IllegalArgumentException
+import kotlin.math.max
 
 /**
  * Created by Jefry Jacky on 23/08/20.
@@ -32,6 +36,8 @@ class UserController {
     private lateinit var getUserService: GetUserService
     @Autowired
     private lateinit var sendEmailVerification: SendEmailVerificationService
+    @Autowired
+    private lateinit var getUsersServices: GetUsersService
 
     @PostMapping("/register", consumes = [MediaType.APPLICATION_FORM_URLENCODED_VALUE])
     @ResponseStatus(HttpStatus.CREATED)
@@ -70,11 +76,25 @@ class UserController {
         try {
             val user = getUserService.execute(token)
             return UserResponse(
-                user.userId, user.email
+                user.userId, user.email, user.emailverified, user.role
             )
         } catch (e: IllegalAccessException){
             throw ResponseStatusException(HttpStatus.UNAUTHORIZED)
         }
+    }
+
+    @GetMapping("/get/users")
+    fun getUsers(
+        @RequestHeader("Authorization") token: String,
+        @RequestParam(required = true, name = "page") page:Int,
+        @RequestParam(required = true, name = "limit") limit:Int
+    ):UsersResponse{
+        val users = getUsersServices.execute(token, max(0, page-1), limit)
+            .map {
+                UserResponse(it.userId, it.email, it.emailverified, it.role)
+            }
+
+        return UsersResponse(users.size, users)
     }
 
     companion object{

@@ -1,10 +1,12 @@
 package com.authentication.app.repository.user
 
+import com.authentication.app.domain.entity.Role
 import com.authentication.app.domain.entity.User
 import com.authentication.app.domain.repository.UserRepository
 import com.authentication.app.repository.entity.UserDB
 import com.authentication.app.repository.mapper.AbstractMapper
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.data.domain.PageRequest
 import org.springframework.stereotype.Repository
 
 /**
@@ -38,6 +40,14 @@ class UserRepositoryImpl: UserRepository {
             return userDbMapper.mapToEntity(userDbOpt.get())
         }
         return null
+    }
+
+    override fun getUsers(page:Int, limit:Int): List<User> {
+        val pageRequest = PageRequest.of(page, limit)
+        return jpaUserRepository.findAll(pageRequest).content
+            .map {
+                User(it.userId, it.email, it.hashPassword, it.emailVerified, Role.create(it.role))
+            }
     }
 
     override fun updatePassword(password: String, userId: Long) {

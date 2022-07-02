@@ -1,5 +1,6 @@
 package com.authentication.app.repository.mapper
 
+import com.authentication.app.domain.entity.Role
 import com.authentication.app.domain.entity.User
 import com.authentication.app.repository.entity.UserDB
 
@@ -14,7 +15,8 @@ class UserDbMapperImpl: AbstractMapper<UserDB, User>() {
                 user.userId,
                 user.email,
                 user.hashPassword,
-                user.emailverified
+                user.emailverified,
+                user.role.name
         )
     }
 
@@ -23,7 +25,8 @@ class UserDbMapperImpl: AbstractMapper<UserDB, User>() {
                 userDb.userId,
                 userDb.email,
                 userDb.hashPassword,
-                userDb.emailVerified
+                userDb.emailVerified,
+                Role.create(userDb.role)
         )
     }
 }
