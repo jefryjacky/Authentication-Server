@@ -1,6 +1,8 @@
 package com.authentication.app.repository.user
 
 import com.authentication.app.repository.entity.UserDB
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.Pageable
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Modifying
 import org.springframework.data.jpa.repository.Query
@@ -23,4 +25,7 @@ interface JpaUserRepository: JpaRepository<UserDB, Long> {
     @Modifying
     @Query("UPDATE UserDB SET emailVerified=true WHERE userId = :userId")
     fun updateEmailVerified(@Param("userId") userId: Long)
+
+    @Query("SELECT * FROM user_table WHERE email LIKE %:email%", nativeQuery = true)
+    fun findAllByEmail(@Param("email") email: String, pageable: Pageable):Page<UserDB>
 }

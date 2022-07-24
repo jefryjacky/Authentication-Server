@@ -18,7 +18,7 @@ class GetUsersServiceImpl:GetUsersService {
     @Autowired
     private lateinit var jsonMapper: JsonMapper
 
-    override fun execute(token: String?, page:Int, limit:Int): List<User> {
+    override fun execute(token: String?, email:String, page:Int, limit:Int): Pair<List<User>, Int> {
         if(token.isNullOrBlank()){
             throw IllegalAccessException()
         } else {
@@ -28,7 +28,7 @@ class GetUsersServiceImpl:GetUsersService {
                 val userId = payload.userId
                 val user = userRepository.getUserById(userId)
                 if(user?.role == Role.ADMIN) {
-                    return userRepository.getUsers(page, limit)
+                    return userRepository.getUsers(email, page, limit)
                 }
             }
             throw IllegalAccessException()

@@ -9,7 +9,7 @@ interface UserRepository {
     fun save(user: User): User
     fun getUser(email: String): User?
     fun getUserById(userId:Long): User?
-    fun getUsers(page: Int, limit:Int): List<User>
+    fun getUsers(email: String, page: Int, limit:Int): Pair<List<User>, Int>
     fun updatePassword(password: String, userId: Long)
     fun updateEmailVerified(userId: Long)
 }

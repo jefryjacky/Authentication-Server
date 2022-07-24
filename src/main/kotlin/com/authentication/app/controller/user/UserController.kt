@@ -86,15 +86,16 @@ class UserController {
     @GetMapping("/get/users")
     fun getUsers(
         @RequestHeader("Authorization") token: String,
+        @RequestParam(required = false, name = "email") email: String?,
         @RequestParam(required = true, name = "page") page:Int,
         @RequestParam(required = true, name = "limit") limit:Int
     ):UsersResponse{
-        val users = getUsersServices.execute(token, max(0, page-1), limit)
-            .map {
+        val pair = getUsersServices.execute(token, email?:"", max(0, page-1), limit)
+        val users = pair.first.map {
                 UserResponse(it.userId, it.email, it.emailverified, it.role)
             }
-
-        return UsersResponse(users.size, users)
+        val totalPages = pair.second
+        return UsersResponse(totalPages, users)
     }
 
     companion object{

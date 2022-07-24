@@ -7,6 +7,7 @@ import com.authentication.app.repository.entity.UserDB
 import com.authentication.app.repository.mapper.AbstractMapper
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.PageRequest
+import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Repository
 
 /**
@@ -42,12 +43,14 @@ class UserRepositoryImpl: UserRepository {
         return null
     }
 
-    override fun getUsers(page:Int, limit:Int): List<User> {
+    override fun getUsers(email: String, page:Int, limit:Int): Pair<List<User>, Int> {
         val pageRequest = PageRequest.of(page, limit)
-        return jpaUserRepository.findAll(pageRequest).content
-            .map {
+        val page =  jpaUserRepository.findAllByEmail(email, pageRequest)
+        val totalPage = page.totalPages
+        val users = page.content.map {
                 User(it.userId, it.email, it.hashPassword, it.emailVerified, Role.create(it.role))
             }
+        return Pair(users, totalPage)
     }
 
     override fun updatePassword(password: String, userId: Long) {
