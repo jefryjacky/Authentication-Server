@@ -72,14 +72,24 @@ class UserController {
     }
 
     @GetMapping("/get")
-    fun getUser(@RequestHeader("Authorization") token: String): UserResponse{
+    fun getUser(
+        @RequestHeader("Authorization") token: String,
+        @RequestParam(required = false, name = "userId") userId:Long?
+    ): UserResponse{
         try {
-            val user = getUserService.execute(token)
-            return UserResponse(
-                user.userId, user.email, user.emailverified, user.role
-            )
+            return getUserService.execute(token, userId).let { user->
+                UserResponse(
+                    user.userId, user.email, user.emailverified, user.role
+                )
+            }
         } catch (e: IllegalAccessException){
             throw ResponseStatusException(HttpStatus.UNAUTHORIZED)
+        } catch (e: IllegalArgumentException){
+            if(e.message == GetUserService.USER_NOT_FOUND){
+                throw ResponseStatusException(HttpStatus.NOT_FOUND)
+            } else {
+                throw ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR)
+            }
         }
     }
 
