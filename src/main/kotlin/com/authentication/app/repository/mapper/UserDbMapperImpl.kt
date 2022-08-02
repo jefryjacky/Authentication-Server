@@ -16,7 +16,8 @@ class UserDbMapperImpl: AbstractMapper<UserDB, User>() {
                 user.email,
                 user.hashPassword,
                 user.emailverified,
-                user.role.name
+                user.role.name,
+                user.isBlocked
         )
     }
 
@@ -26,7 +27,8 @@ class UserDbMapperImpl: AbstractMapper<UserDB, User>() {
                 userDb.email,
                 userDb.hashPassword,
                 userDb.emailVerified,
-                Role.create(userDb.role)
+                Role.create(userDb.role),
+                userDb.isBlocked
         )
     }
 }

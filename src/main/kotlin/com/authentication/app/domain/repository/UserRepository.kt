@@ -12,4 +12,5 @@ interface UserRepository {
     fun getUsers(email: String, page: Int, limit:Int): Pair<List<User>, Int>
     fun updatePassword(password: String, userId: Long)
     fun updateEmailVerified(userId: Long)
+    fun updateUserBlocked(userId: Long)
 }

@@ -28,4 +28,9 @@ interface JpaUserRepository: JpaRepository<UserDB, Long> {
 
     @Query("SELECT * FROM user_table WHERE email LIKE %:email%", nativeQuery = true)
     fun findAllByEmail(@Param("email") email: String, pageable: Pageable):Page<UserDB>
+
+    @Transactional
+    @Modifying
+    @Query("UPDATE UserDB SET isBlocked=true WHERE userId = :userId")
+    fun updateUserBlocked(@Param("userId") userId: Long)
 }

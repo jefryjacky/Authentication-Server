@@ -14,6 +14,9 @@ data class UserDB (
         @Column(unique = true)
         val email: String,
         val hashPassword: String,
+        @Column(columnDefinition = "boolean default false")
         val emailVerified: Boolean,
-        val role:String
+        val role:String,
+        @Column(columnDefinition = "boolean default false")
+        val isBlocked:Boolean = false
 )

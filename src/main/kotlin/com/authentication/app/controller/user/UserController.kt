@@ -4,6 +4,7 @@ import com.authentication.app.controller.oauth.model.TokenResponse
 import com.authentication.app.controller.user.model.response.UserResponse
 import com.authentication.app.controller.user.model.response.UsersResponse
 import com.authentication.app.domain.usecase.oauth.OAuthService
+import com.authentication.app.domain.usecase.user.block.BlockUserService
 import com.authentication.app.domain.usecase.user.getuser.GetUserService
 import com.authentication.app.domain.usecase.user.getusers.GetUsersService
 import com.authentication.app.domain.usecase.user.registeruser.RegisterUserInputData
@@ -38,6 +39,8 @@ class UserController {
     private lateinit var sendEmailVerification: SendEmailVerificationService
     @Autowired
     private lateinit var getUsersServices: GetUsersService
+    @Autowired
+    private lateinit var blockUserService:BlockUserService
 
     @PostMapping("/register", consumes = [MediaType.APPLICATION_FORM_URLENCODED_VALUE])
     @ResponseStatus(HttpStatus.CREATED)
@@ -106,6 +109,30 @@ class UserController {
             }
         val totalPages = pair.second
         return UsersResponse(totalPages, users)
+    }
+
+    @PutMapping("/block/{userId}")
+    fun blockUser(
+        @RequestHeader("Authorization") token: String,
+        @PathVariable(required = true, name = "userId") userId: Long){
+        try {
+            blockUserService.execute(token, userId)
+        } catch (e: IllegalAccessException){
+            throw ResponseStatusException(HttpStatus.UNAUTHORIZED)
+        } catch (e: IllegalArgumentException){
+            if(e.message == GetUserService.USER_NOT_FOUND){
+                throw ResponseStatusException(HttpStatus.NOT_FOUND)
+            } else {
+                throw ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR)
+            }
+        }
+    }
+
+    @PutMapping("/unblock/{userId}")
+    fun unblockUser(
+        @RequestHeader("Authorization") token: String,
+        @PathVariable(required = true, name = "userId") userId: Long){
+
     }
 
     companion object{

@@ -48,7 +48,7 @@ class UserRepositoryImpl: UserRepository {
         val page =  jpaUserRepository.findAllByEmail(email, pageRequest)
         val totalPage = page.totalPages
         val users = page.content.map {
-                User(it.userId, it.email, it.hashPassword, it.emailVerified, Role.create(it.role))
+                userDbMapper.mapToEntity(it)
             }
         return Pair(users, totalPage)
     }
@@ -59,6 +59,11 @@ class UserRepositoryImpl: UserRepository {
 
     override fun updateEmailVerified(userId: Long) {
         jpaUserRepository.updateEmailVerified(userId)
+        jpaUserRepository.flush()
+    }
+
+    override fun updateUserBlocked(userId: Long) {
+        jpaUserRepository.updateUserBlocked(userId)
         jpaUserRepository.flush()
     }
 }

@@ -8,5 +8,6 @@ data class User(
         val email: String,
         val hashPassword: String,
         val emailverified:Boolean,
-        val role: Role = Role.USER
+        val role: Role = Role.USER,
+        val isBlocked:Boolean = false
 )
