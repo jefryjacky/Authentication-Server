@@ -66,4 +66,9 @@ class UserRepositoryImpl: UserRepository {
         jpaUserRepository.updateUserBlocked(userId)
         jpaUserRepository.flush()
     }
+
+    override fun updateUserUnBlocked(userId: Long) {
+        jpaUserRepository.updateUserUnBlocked(userId)
+        jpaUserRepository.flush()
+    }
 }

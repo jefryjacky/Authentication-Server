@@ -13,4 +13,5 @@ interface UserRepository {
     fun updatePassword(password: String, userId: Long)
     fun updateEmailVerified(userId: Long)
     fun updateUserBlocked(userId: Long)
+    fun updateUserUnBlocked(userId: Long)
 }

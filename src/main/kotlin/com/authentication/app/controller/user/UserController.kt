@@ -10,6 +10,7 @@ import com.authentication.app.domain.usecase.user.getusers.GetUsersService
 import com.authentication.app.domain.usecase.user.registeruser.RegisterUserInputData
 import com.authentication.app.domain.usecase.user.registeruser.RegisterUserService
 import com.authentication.app.domain.usecase.user.sendemailverification.SendEmailVerificationService
+import com.authentication.app.domain.usecase.user.unblock.UnBlockUserService
 import com.authentication.app.domain.usecase.user.verifyemail.VerifyEmailService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.jpa.repository.Query
@@ -41,6 +42,8 @@ class UserController {
     private lateinit var getUsersServices: GetUsersService
     @Autowired
     private lateinit var blockUserService:BlockUserService
+    @Autowired
+    private lateinit var unBlockUserService:UnBlockUserService
 
     @PostMapping("/register", consumes = [MediaType.APPLICATION_FORM_URLENCODED_VALUE])
     @ResponseStatus(HttpStatus.CREATED)
@@ -132,7 +135,17 @@ class UserController {
     fun unblockUser(
         @RequestHeader("Authorization") token: String,
         @PathVariable(required = true, name = "userId") userId: Long){
-
+        try {
+            unBlockUserService.execute(token, userId)
+        } catch (e: IllegalAccessException){
+            throw ResponseStatusException(HttpStatus.UNAUTHORIZED)
+        } catch (e: IllegalArgumentException){
+            if(e.message == GetUserService.USER_NOT_FOUND){
+                throw ResponseStatusException(HttpStatus.NOT_FOUND)
+            } else {
+                throw ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR)
+            }
+        }
     }
 
     companion object{

@@ -33,4 +33,9 @@ interface JpaUserRepository: JpaRepository<UserDB, Long> {
     @Modifying
     @Query("UPDATE UserDB SET isBlocked=true WHERE userId = :userId")
     fun updateUserBlocked(@Param("userId") userId: Long)
+
+    @Transactional
+    @Modifying
+    @Query("UPDATE UserDB SET isBlocked=false WHERE userId = :userId")
+    fun updateUserUnBlocked(@Param("userId") userId: Long)
 }
