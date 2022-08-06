@@ -35,11 +35,13 @@ class VerifyEmailServiceImpl:VerifyEmailService {
         val expired = payload.expired
         val currentTime = System.currentTimeMillis()
         if(expired >= currentTime) {
-            userRepository.updateEmailVerified(userId)
             val user = userRepository.getUserById(userId)
-            user?.let {
-                val refreshToken = oAuthService.generateRefreshToken(it.userId)
-                return oAuthService.requestAccessToken(refreshToken)
+            if(user?.isBlocked == false) {
+                userRepository.updateEmailVerified(userId)
+                user?.let {
+                    val refreshToken = oAuthService.generateRefreshToken(it.userId)
+                    return oAuthService.requestAccessToken(refreshToken)
+                }
             }
         }
         throw IllegalArgumentException("token invalid")

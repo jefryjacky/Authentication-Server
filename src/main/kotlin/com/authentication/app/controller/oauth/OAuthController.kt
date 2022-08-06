@@ -52,10 +52,14 @@ class OAuthController {
     @PostMapping("/google/token", consumes = [MediaType.APPLICATION_FORM_URLENCODED_VALUE])
     @ResponseStatus(HttpStatus.OK)
     fun requestAccessTokenWithGoogle(@RequestParam map: MultiValueMap<String, String>):TokenResponse{
-        val token = map.getFirst(GOOGLE_TOKEN) ?: throw ResponseStatusException(HttpStatus.BAD_REQUEST)
-        val tokenData = service.requestAccessTokenWithGoogleToken(token)
-            ?: throw ResponseStatusException(HttpStatus.UNAUTHORIZED)
-        return TokenResponse(tokenData.accessToken, tokenData.refreshToken, tokenData.expiredTime)
+        try {
+            val token = map.getFirst(GOOGLE_TOKEN) ?: throw ResponseStatusException(HttpStatus.BAD_REQUEST)
+            val tokenData = service.requestAccessTokenWithGoogleToken(token)
+                ?: throw ResponseStatusException(HttpStatus.UNAUTHORIZED)
+            return TokenResponse(tokenData.accessToken, tokenData.refreshToken, tokenData.expiredTime)
+        } catch (e: UnAuthorizedException){
+            throw ResponseStatusException(HttpStatus.UNAUTHORIZED)
+        }
     }
 
     companion object{

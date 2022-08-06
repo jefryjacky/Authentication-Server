@@ -35,7 +35,7 @@ class GetUserServiceImpl : GetUserService {
                 var signedInUser = userRepository.getUserById(payload.userId)
                 if (signedInUser != null) {
                     if (userId != null) {
-                        if(signedInUser.role == Role.ADMIN){
+                        if(signedInUser.role == Role.ADMIN && !signedInUser.isBlocked){
                             val user = userRepository.getUserById(userId)
                             if (user != null) {
                                 return user
@@ -45,7 +45,9 @@ class GetUserServiceImpl : GetUserService {
                         }
                         throw IllegalAccessException()
                     }
-                    return signedInUser
+                    if(!signedInUser.isBlocked) {
+                        return signedInUser
+                    }
                 }
             }
             throw IllegalAccessException()

@@ -32,7 +32,7 @@ class OAuthServiceImpl: OAuthService {
     override fun requestAccessToken(credential: CredentialData): TokenData {
         val user = userRepository.getUser(credential.email) ?: throw UnAuthorizedException()
         val matched = passwordCrypto.matchPassword(credential.password, user.hashPassword)
-        if(matched){
+        if(matched && !user.isBlocked){
             val issueDate = System.currentTimeMillis()
             val expiredDate = issueDate + ACCESS_TOKEN_EXPIRED_DURATION
             val payload = AccessTokenPayload(user.userId, issueDate, expireDate = expiredDate)
@@ -47,7 +47,8 @@ class OAuthServiceImpl: OAuthService {
     override fun requestAccessToken(refreshTokenString: String): TokenData {
         val payloadJsonString = jwtEncoder.decodeToString(refreshTokenString)
         val refreshTokenPayload = jsonMapper.parseJsonToRefreshTokenPayload(payloadJsonString)
-        if(refreshTokenPayload.expireDate > System.currentTimeMillis() && refreshTokenPayload.type == TokenType.REFRESH){
+        val user = userRepository.getUserById(refreshTokenPayload.userId)
+        if(refreshTokenPayload.expireDate > System.currentTimeMillis() && refreshTokenPayload.type == TokenType.REFRESH && user?.isBlocked == false){
             val issueDate = System.currentTimeMillis()
             val expiredDate = issueDate + ACCESS_TOKEN_EXPIRED_DURATION
             val payload = AccessTokenPayload(refreshTokenPayload.userId, issueDate, expireDate = expiredDate)
@@ -70,6 +71,7 @@ class OAuthServiceImpl: OAuthService {
             )
             existingUser = userRepository.save(newUser)
         }
+        if(existingUser.isBlocked) throw UnAuthorizedException()
         val refreshToken = generateRefreshToken(existingUser.userId)
         return requestAccessToken(refreshToken)
     }

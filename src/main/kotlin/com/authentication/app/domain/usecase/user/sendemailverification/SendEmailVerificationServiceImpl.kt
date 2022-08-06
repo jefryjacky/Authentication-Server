@@ -31,7 +31,7 @@ class SendEmailVerificationServiceImpl:SendEmailVerificationService {
 
     override fun send(email: String) {
         val user = userRepository.getUser(email)
-        if(user?.emailverified == false) {
+        if(user?.emailverified == false && !user.isBlocked) {
             val expired = System.currentTimeMillis() + 3600 * 1000
             val payload = EmailVerificationPayload(
                 TokenType.EMAIL_VERIFICATION.toString(),
