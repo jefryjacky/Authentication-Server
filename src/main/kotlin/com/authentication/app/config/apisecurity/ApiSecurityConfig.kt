@@ -21,6 +21,8 @@ class ApiSecurityConfig: WebSecurityConfigurerAdapter() {
 
     @Value("\${api.key}")
     private var apiKey:String = ""
+    @Value("\${allow.origin}")
+    private var allowOrigin:String = ""
 
     override fun configure(http: HttpSecurity) {
         val filter = ApiKeyFilter("API-KEY")
@@ -36,7 +38,7 @@ class ApiSecurityConfig: WebSecurityConfigurerAdapter() {
       http.antMatcher("/api/**")
             .cors().configurationSource {
                 val cors = CorsConfiguration()
-                cors.allowedOrigins = listOf("http://localhost:3000")
+                cors.allowedOrigins = listOf(allowOrigin)
                 cors.allowedMethods = listOf("GET","POST", "PUT", "DELETE", "OPTIONS")
                 cors.allowedHeaders = listOf("*")
                 return@configurationSource cors
