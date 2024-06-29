@@ -22,10 +22,12 @@ class RegisterUserServiceImpl: RegisterUserService {
     private lateinit var mailUtil: MailUtil
     override fun register(registerUserInputData: RegisterUserInputData){
         val hashPassword = passwordCrypto.hashPassword(registerUserInputData.password)
-        val user = User(email = registerUserInputData.email, hashPassword = hashPassword, emailverified = false)
-        try {
+        val email = registerUserInputData.email.toLowerCase()
+        var user = userRepository.getUser(email)
+        if(user == null) {
+            user = User(email =email, hashPassword = hashPassword, emailverified = false)
             userRepository.save(user)
-        } catch (e: DataIntegrityViolationException){
+        } else {
             val existingUser = userRepository.getUser(registerUserInputData.email)
             existingUser?.let {
                 if(existingUser.emailverified) {
