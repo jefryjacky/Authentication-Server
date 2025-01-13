@@ -9,7 +9,7 @@ plugins {
 }
 
 group = "com.authentication"
-version = "0.1.2-SNAPSHOT"
+version = "0.1.3-SNAPSHOT"
 java.sourceCompatibility = JavaVersion.VERSION_1_8
 
 repositories {
