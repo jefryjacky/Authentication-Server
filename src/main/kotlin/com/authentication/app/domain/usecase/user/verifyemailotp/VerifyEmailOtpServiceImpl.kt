@@ -12,7 +12,7 @@ class VerifyEmailOtpServiceImpl:VerifyEmailOtpService {
     @Autowired
     private lateinit var userRepository: UserRepository
     override fun execute(email: String, otp: String):Pair<Boolean, String> {
-        val emailOtp = emailOtpRepository.getEmailOtp(email)
+        val emailOtp = emailOtpRepository.get(email)
         if(emailOtp?.otp == otp){
             val user = userRepository.getUser(email)
             val updatedUser = user?.copy(emailverified = true)

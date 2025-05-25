@@ -16,12 +16,12 @@ class EmailOtpRepositoryImpl:EmailOtpRepository {
     @Autowired
     private lateinit var jpaEmailOtpRepository: JpaEmailOtpRepository
 
-    override fun saveEmailOtp(emailOtp: EmailOtp) {
+    override fun save(emailOtp: EmailOtp) {
         val modelDp = mapper.mapFromEntity(emailOtp)
         jpaEmailOtpRepository.save(modelDp)
     }
 
-    override fun getEmailOtp(email: String): EmailOtp? {
+    override fun get(email: String): EmailOtp? {
         val modelDb = jpaEmailOtpRepository.findByIdOrNull(email)
         return modelDb?.let {
             mapper.mapToEntity(modelDb)

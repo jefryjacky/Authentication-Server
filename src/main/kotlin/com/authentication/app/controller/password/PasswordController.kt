@@ -1,5 +1,6 @@
 package com.authentication.app.controller.password
 
+import com.authentication.app.domain.usecase.password.requestchangepasswordotp.RequestChangePasswordOtpService
 import com.authentication.app.domain.usecase.password.updatepassword.bycredential.UpdatePasswordByCredentialService
 import com.authentication.app.domain.usecase.password.resetpassword.ResetPasswordService
 import com.authentication.app.domain.usecase.password.updatepassword.bytoken.UpdatePasswordByToken
@@ -27,6 +28,8 @@ class PasswordController {
     private lateinit var resetPasswordService:ResetPasswordService
     @Autowired
     private lateinit var getUserService: GetUserService
+    @Autowired
+    private lateinit var requestChangePasswordOtpService: RequestChangePasswordOtpService
 
     @PostMapping("/update", consumes = [MediaType.APPLICATION_FORM_URLENCODED_VALUE])
     fun updatePassword(@RequestHeader("Authorization") token: String, @RequestParam map: MultiValueMap<String, String>){
@@ -80,6 +83,11 @@ class PasswordController {
             return
         }
         throw ResponseStatusException(HttpStatus.BAD_REQUEST)
+    }
+
+    @PostMapping("/requestchangepassword/otp")
+    fun requestChangePasswordOtp(email: String){
+        requestChangePasswordOtpService.execute(email)
     }
 
     companion object{

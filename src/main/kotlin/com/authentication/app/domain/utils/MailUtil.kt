@@ -8,4 +8,5 @@ interface MailUtil {
     fun sendResetPassword(email:String, link:String, name: String)
     fun sendEmailVerification(email:String, link:String, name: String)
     fun sendEmailOtpCode(email:String, otpCode:String)
+    fun sendChangePasswordOtp(email: String, otpCode: String)
 }
