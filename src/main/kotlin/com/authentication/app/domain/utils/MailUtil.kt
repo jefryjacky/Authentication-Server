@@ -7,4 +7,5 @@ interface MailUtil {
     fun sendEmailAlreadyRegistered(email:String)
     fun sendResetPassword(email:String, link:String, name: String)
     fun sendEmailVerification(email:String, link:String, name: String)
+    fun sendEmailOtpCode(email:String, otpCode:String)
 }

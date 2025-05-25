@@ -16,12 +16,10 @@ import java.util.*
 interface JpaUserRepository: JpaRepository<UserDB, Long> {
     fun findByEmail(email: String): Optional<UserDB>
 
-    @Transactional
     @Modifying
     @Query("UPDATE UserDB SET hashPassword = :password WHERE userId = :userId")
     fun updatePassword(@Param("password") newPasswordHashed: String, @Param("userId") userId: Long)
 
-    @Transactional
     @Modifying
     @Query("UPDATE UserDB SET emailVerified=true WHERE userId = :userId")
     fun updateEmailVerified(@Param("userId") userId: Long)
@@ -29,12 +27,10 @@ interface JpaUserRepository: JpaRepository<UserDB, Long> {
     @Query("SELECT * FROM user_table WHERE email LIKE %:email%", nativeQuery = true)
     fun findAllByEmail(@Param("email") email: String, pageable: Pageable):Page<UserDB>
 
-    @Transactional
     @Modifying
     @Query("UPDATE UserDB SET isBlocked=true WHERE userId = :userId")
     fun updateUserBlocked(@Param("userId") userId: Long)
 
-    @Transactional
     @Modifying
     @Query("UPDATE UserDB SET isBlocked=false WHERE userId = :userId")
     fun updateUserUnBlocked(@Param("userId") userId: Long)

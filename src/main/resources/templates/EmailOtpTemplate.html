@@ -1,0 +1,14 @@
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+<p>Dear Sir/Madam</p>
+
+<p>Your One Time Password (OTP) is</p>
+<p><h2 th:text="|${otp_code}|"></h2></p>
+<p>This OTP is valid for 3 minutes. Please do not share this One Time Password with anyone</p>
+
+<p>
+    Regards, <br />
+    <em th:text="|${regarded_by}|"></em>
+</p>
+</body>
+</html>

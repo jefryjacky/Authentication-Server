@@ -69,4 +69,18 @@ class MailUtilImpl: MailUtil {
         helper.setText(htmlContent, true)
         mail.send(mimeMessage)
     }
+
+    override fun sendEmailOtpCode(email: String, otpCode: String) {
+        val mimeMessage = mail.createMimeMessage()
+        val helper = MimeMessageHelper(mimeMessage)
+        val context= Context(Locale.getDefault())
+        context.setVariable("otp_code", otpCode)
+        context.setVariable("regarded_by", regardedBy)
+        val htmlContent = templateEngine.process("EmailOtpTemplate", context)
+        helper.setFrom(emailFrom)
+        helper.setSubject("Email verification")
+        helper.setTo(email)
+        helper.setText(htmlContent, true)
+        mail.send(mimeMessage)
+    }
 }

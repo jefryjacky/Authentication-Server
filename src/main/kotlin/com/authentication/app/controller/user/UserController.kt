@@ -10,6 +10,7 @@ import com.authentication.app.domain.usecase.user.getusers.GetUsersService
 import com.authentication.app.domain.usecase.user.registeruser.RegisterUserInputData
 import com.authentication.app.domain.usecase.user.registeruser.RegisterUserService
 import com.authentication.app.domain.usecase.user.sendemailverification.SendEmailVerificationService
+import com.authentication.app.domain.usecase.user.sendemailverificationotp.SendEmailVerificationOtp
 import com.authentication.app.domain.usecase.user.unblock.UnBlockUserService
 import com.authentication.app.domain.usecase.user.verifyemail.VerifyEmailService
 import org.springframework.beans.factory.annotation.Autowired
@@ -44,6 +45,8 @@ class UserController {
     private lateinit var blockUserService:BlockUserService
     @Autowired
     private lateinit var unBlockUserService:UnBlockUserService
+    @Autowired
+    private lateinit var sendEmailVerificationOtp: SendEmailVerificationOtp
 
     @PostMapping("/register", consumes = [MediaType.APPLICATION_FORM_URLENCODED_VALUE])
     @ResponseStatus(HttpStatus.CREATED)
@@ -75,6 +78,11 @@ class UserController {
             }
         }
         throw ResponseStatusException(HttpStatus.BAD_REQUEST)
+    }
+
+    @PostMapping("/requestemailverification/otp")
+    fun requestEmailVerificationOtp(email: String) {
+        sendEmailVerificationOtp.execute(email)
     }
 
     @GetMapping("/get")
