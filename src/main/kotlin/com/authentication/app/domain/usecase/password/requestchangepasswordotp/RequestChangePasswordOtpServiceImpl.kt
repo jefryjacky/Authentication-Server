@@ -1,20 +1,21 @@
 package com.authentication.app.domain.usecase.password.requestchangepasswordotp
 
 import com.authentication.app.domain.entity.ChangePasswordOtp
-import com.authentication.app.domain.repository.ChangePassworOtpRepository
+import com.authentication.app.domain.repository.ChangePasswordOtpRepository
 import com.authentication.app.domain.repository.UserRepository
 import com.authentication.app.domain.utils.MailUtil
 import com.authentication.app.domain.utils.SecureRandomUtils
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.server.ResponseStatusException
 import java.util.*
 
 @Service
 class RequestChangePasswordOtpServiceImpl: RequestChangePasswordOtpService {
     @Autowired
-    private lateinit var changePassworOtpRepository: ChangePassworOtpRepository
+    private lateinit var changePasswordOtpRepository: ChangePasswordOtpRepository
     @Autowired
     private lateinit var userRepository: UserRepository
     @Autowired
@@ -26,7 +27,7 @@ class RequestChangePasswordOtpServiceImpl: RequestChangePasswordOtpService {
         val user = userRepository.getUser(email)
 
         if(user?.emailverified == true && !user.isBlocked) {
-            val existingChangePasswordOtp = changePassworOtpRepository.get(email)
+            val existingChangePasswordOtp = changePasswordOtpRepository.get(email)
             if(existingChangePasswordOtp != null) {
                 val calendar = Calendar.getInstance()
                 calendar.time = existingChangePasswordOtp.createdDate
@@ -42,7 +43,7 @@ class RequestChangePasswordOtpServiceImpl: RequestChangePasswordOtpService {
                 otp = otp ,
                 createdDate = Date()
             )
-            changePassworOtpRepository.save(changePasswordOtp)
+            changePasswordOtpRepository.save(changePasswordOtp)
             mailUtil.sendChangePasswordOtp(email, otp)
         }
     }

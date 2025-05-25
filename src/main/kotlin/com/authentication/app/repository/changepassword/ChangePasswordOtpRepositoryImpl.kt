@@ -1,7 +1,7 @@
 package com.authentication.app.repository.changepassword
 
 import com.authentication.app.domain.entity.ChangePasswordOtp
-import com.authentication.app.domain.repository.ChangePassworOtpRepository
+import com.authentication.app.domain.repository.ChangePasswordOtpRepository
 import com.authentication.app.repository.entity.ChangePasswordOtpDb
 import com.authentication.app.repository.mapper.AbstractMapper
 import org.springframework.beans.factory.annotation.Autowired
@@ -9,7 +9,7 @@ import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Repository
 
 @Repository
-class ChangePasswordOtpRepositoryImpl:ChangePassworOtpRepository {
+class ChangePasswordOtpRepositoryImpl:ChangePasswordOtpRepository {
 
     @Autowired
     private lateinit var mapper:AbstractMapper<ChangePasswordOtpDb, ChangePasswordOtp>

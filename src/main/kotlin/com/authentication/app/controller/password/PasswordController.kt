@@ -1,5 +1,7 @@
 package com.authentication.app.controller.password
 
+import com.authentication.app.controller.password.model.ChangePasswordWithOtpResponse
+import com.authentication.app.domain.usecase.password.updatepassword.byotp.ChangePasswordWithOtpService
 import com.authentication.app.domain.usecase.password.requestchangepasswordotp.RequestChangePasswordOtpService
 import com.authentication.app.domain.usecase.password.updatepassword.bycredential.UpdatePasswordByCredentialService
 import com.authentication.app.domain.usecase.password.resetpassword.ResetPasswordService
@@ -30,6 +32,8 @@ class PasswordController {
     private lateinit var getUserService: GetUserService
     @Autowired
     private lateinit var requestChangePasswordOtpService: RequestChangePasswordOtpService
+    @Autowired
+    private lateinit var changePasswordWithOtpService: ChangePasswordWithOtpService
 
     @PostMapping("/update", consumes = [MediaType.APPLICATION_FORM_URLENCODED_VALUE])
     fun updatePassword(@RequestHeader("Authorization") token: String, @RequestParam map: MultiValueMap<String, String>){
@@ -88,6 +92,14 @@ class PasswordController {
     @PostMapping("/requestchangepassword/otp")
     fun requestChangePasswordOtp(email: String){
         requestChangePasswordOtpService.execute(email)
+    }
+
+    @PostMapping("/changepassword/otp")
+    fun ChangePasswordWithOtp(email: String, password:String, otp:String):ChangePasswordWithOtpResponse{
+        val (status, message) = changePasswordWithOtpService.execute(email, password, otp)
+        return ChangePasswordWithOtpResponse(
+            status, message
+        )
     }
 
     companion object{
