@@ -3,6 +3,7 @@ package com.authentication.app.controller.user
 import com.authentication.app.controller.oauth.model.TokenResponse
 import com.authentication.app.controller.user.model.response.UserResponse
 import com.authentication.app.controller.user.model.response.UsersResponse
+import com.authentication.app.controller.user.model.response.VerifyEmailOtpResponse
 import com.authentication.app.domain.usecase.oauth.OAuthService
 import com.authentication.app.domain.usecase.user.block.BlockUserService
 import com.authentication.app.domain.usecase.user.getuser.GetUserService
@@ -10,11 +11,11 @@ import com.authentication.app.domain.usecase.user.getusers.GetUsersService
 import com.authentication.app.domain.usecase.user.registeruser.RegisterUserInputData
 import com.authentication.app.domain.usecase.user.registeruser.RegisterUserService
 import com.authentication.app.domain.usecase.user.sendemailverification.SendEmailVerificationService
-import com.authentication.app.domain.usecase.user.sendemailverificationotp.SendEmailVerificationOtp
+import com.authentication.app.domain.usecase.user.sendemailverificationotp.SendEmailVerificationOtpService
 import com.authentication.app.domain.usecase.user.unblock.UnBlockUserService
 import com.authentication.app.domain.usecase.user.verifyemail.VerifyEmailService
+import com.authentication.app.domain.usecase.user.verifyemailotp.VerifyEmailOtpService
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.data.jpa.repository.Query
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.util.MultiValueMap
@@ -46,7 +47,9 @@ class UserController {
     @Autowired
     private lateinit var unBlockUserService:UnBlockUserService
     @Autowired
-    private lateinit var sendEmailVerificationOtp: SendEmailVerificationOtp
+    private lateinit var sendEmailVerificationOtp: SendEmailVerificationOtpService
+    @Autowired
+    private lateinit var verifyEmailOtp: VerifyEmailOtpService
 
     @PostMapping("/register", consumes = [MediaType.APPLICATION_FORM_URLENCODED_VALUE])
     @ResponseStatus(HttpStatus.CREATED)
@@ -83,6 +86,15 @@ class UserController {
     @PostMapping("/requestemailverification/otp")
     fun requestEmailVerificationOtp(email: String) {
         sendEmailVerificationOtp.execute(email)
+    }
+
+    @PostMapping("/verify/email/otp")
+    fun verifyEmailOtp(email: String, otp:String):VerifyEmailOtpResponse{
+        val (status, message) = verifyEmailOtp.execute(email, otp)
+        return VerifyEmailOtpResponse(
+            status = status,
+            message = message
+        )
     }
 
     @GetMapping("/get")

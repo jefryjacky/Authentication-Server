@@ -1,5 +1,5 @@
 package com.authentication.app.domain.usecase.user.sendemailverificationotp
 
-interface SendEmailVerificationOtp {
+interface SendEmailVerificationOtpService {
     fun execute(email:String)
 }

@@ -12,7 +12,7 @@ import org.springframework.web.server.ResponseStatusException
 import java.util.*
 
 @Service
-class SendEmailVerificationOtpImpl:SendEmailVerificationOtp {
+class SendEmailVerificationOtpServiceImpl:SendEmailVerificationOtpService {
     @Autowired
     private lateinit var userRepository: UserRepository
     @Autowired
