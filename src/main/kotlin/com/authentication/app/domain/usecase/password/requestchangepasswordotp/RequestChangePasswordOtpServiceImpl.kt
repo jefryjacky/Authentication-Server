@@ -25,6 +25,9 @@ class RequestChangePasswordOtpServiceImpl: RequestChangePasswordOtpService {
 
     override fun execute(email: String) {
         val user = userRepository.getUser(email)
+        if(email.isBlank()){
+            throw IllegalArgumentException("email is blank")
+        }
 
         if(user?.emailverified == true && !user.isBlocked) {
             val existingChangePasswordOtp = changePasswordOtpRepository.get(email)

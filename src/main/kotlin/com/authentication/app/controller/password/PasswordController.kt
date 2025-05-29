@@ -1,6 +1,5 @@
 package com.authentication.app.controller.password
 
-import com.authentication.app.controller.password.model.ChangePasswordWithOtpResponse
 import com.authentication.app.domain.usecase.password.updatepassword.byotp.ChangePasswordWithOtpService
 import com.authentication.app.domain.usecase.password.requestchangepasswordotp.RequestChangePasswordOtpService
 import com.authentication.app.domain.usecase.password.updatepassword.bycredential.UpdatePasswordByCredentialService
@@ -13,7 +12,6 @@ import org.springframework.http.MediaType
 import org.springframework.util.MultiValueMap
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.server.ResponseStatusException
-import java.lang.IllegalArgumentException
 
 /**
  * Created by Jefry Jacky on 27/09/20.
@@ -91,15 +89,22 @@ class PasswordController {
 
     @PostMapping("/requestchangepassword/otp")
     fun requestChangePasswordOtp(email: String){
-        requestChangePasswordOtpService.execute(email)
+        try {
+            requestChangePasswordOtpService.execute(email)
+        } catch (e:IllegalArgumentException){
+            throw ResponseStatusException(HttpStatus.BAD_REQUEST, e.message)
+        }
     }
 
-    @PostMapping("/changepassword/otp")
-    fun ChangePasswordWithOtp(email: String, password:String, otp:String):ChangePasswordWithOtpResponse{
-        val (status, message) = changePasswordWithOtpService.execute(email, password, otp)
-        return ChangePasswordWithOtpResponse(
-            status, message
-        )
+    @PostMapping("/update/otp")
+    fun updatePasswordByOtp(email: String, password:String, otp:String){
+        try {
+            changePasswordWithOtpService.execute(email, password, otp)
+        } catch (e:IllegalAccessException){
+            throw ResponseStatusException(HttpStatus.FORBIDDEN, e.message)
+        } catch (e:IllegalArgumentException){
+            throw ResponseStatusException(HttpStatus.BAD_REQUEST, e.message)
+        }
     }
 
     companion object{

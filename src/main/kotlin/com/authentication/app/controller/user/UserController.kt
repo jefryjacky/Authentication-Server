@@ -3,7 +3,6 @@ package com.authentication.app.controller.user
 import com.authentication.app.controller.oauth.model.TokenResponse
 import com.authentication.app.controller.user.model.response.UserResponse
 import com.authentication.app.controller.user.model.response.UsersResponse
-import com.authentication.app.controller.user.model.response.VerifyEmailOtpResponse
 import com.authentication.app.domain.usecase.oauth.OAuthService
 import com.authentication.app.domain.usecase.user.block.BlockUserService
 import com.authentication.app.domain.usecase.user.getuser.GetUserService
@@ -21,7 +20,6 @@ import org.springframework.http.MediaType
 import org.springframework.util.MultiValueMap
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.server.ResponseStatusException
-import java.lang.IllegalArgumentException
 import kotlin.math.max
 
 /**
@@ -89,12 +87,15 @@ class UserController {
     }
 
     @PostMapping("/verify/email/otp")
-    fun verifyEmailOtp(email: String, otp:String):VerifyEmailOtpResponse{
-        val (status, message) = verifyEmailOtp.execute(email, otp)
-        return VerifyEmailOtpResponse(
-            status = status,
-            message = message
-        )
+    fun verifyEmailOtp(email: String, otp:String): TokenResponse{
+        try {
+            val tokenData = verifyEmailOtp.execute(email, otp)
+            return TokenResponse(tokenData.accessToken, tokenData.refreshToken, tokenData.expiredTime)
+        } catch (e:IllegalAccessException){
+            throw ResponseStatusException(HttpStatus.FORBIDDEN, e.message)
+        } catch (e:IllegalArgumentException){
+            throw ResponseStatusException(HttpStatus.BAD_REQUEST, e.message)
+        }
     }
 
     @GetMapping("/get")

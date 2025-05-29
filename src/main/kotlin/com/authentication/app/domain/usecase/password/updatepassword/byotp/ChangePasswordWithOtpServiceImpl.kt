@@ -22,6 +22,9 @@ class ChangePasswordWithOtpServiceImpl: ChangePasswordWithOtpService {
 
     @Transactional
     override fun execute(email: String, password: String, otp: String): Pair<Boolean, String> {
+        if(email.isBlank() || password.isBlank() || otp.isBlank()){
+            throw IllegalArgumentException("email, password or otp is blank")
+        }
         val user = userRepository.getUser(email)
         val existingChangePasswordOtp = changePasswordOtpRepository.get(email)
         if(user != null && existingChangePasswordOtp?.otp == otp){
@@ -30,13 +33,13 @@ class ChangePasswordWithOtpServiceImpl: ChangePasswordWithOtpService {
             calendar.add(Calendar.MINUTE, 3)
             val rateLimitDate = calendar.time
             if(Date() > rateLimitDate){
-                return Pair(false, "invalid otp")
+                throw IllegalAccessException("invalid otp")
             } else {
                 val newPasswordHashed = passwordCrypto.hashPassword(password)
                 updatePasswordService.updatePassword(userId = user.userId, newPassword = newPasswordHashed)
                 return Pair(true, "change password success")
             }
         }
-        return Pair(false, "invalid otp")
+        throw IllegalAccessException("invalid otp")
     }
 }
