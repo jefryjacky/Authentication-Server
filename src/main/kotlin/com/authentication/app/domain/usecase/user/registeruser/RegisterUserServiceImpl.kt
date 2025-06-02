@@ -7,6 +7,7 @@ import com.authentication.app.domain.utils.PasswordCrypto
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.dao.DataIntegrityViolationException
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 import java.lang.RuntimeException
 
 /**
@@ -20,6 +21,8 @@ class RegisterUserServiceImpl: RegisterUserService {
     private lateinit var userRepository: UserRepository
     @Autowired
     private lateinit var mailUtil: MailUtil
+
+    @Transactional
     override fun register(registerUserInputData: RegisterUserInputData){
         val hashPassword = passwordCrypto.hashPassword(registerUserInputData.password)
         val email = registerUserInputData.email.toLowerCase()
