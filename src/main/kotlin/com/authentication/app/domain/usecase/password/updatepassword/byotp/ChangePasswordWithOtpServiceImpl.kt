@@ -37,8 +37,7 @@ class ChangePasswordWithOtpServiceImpl: ChangePasswordWithOtpService {
             if(Date() > rateLimitDate){
                 throw ResponseStatusException(HttpStatus.FORBIDDEN, "invalid OTP")
             } else {
-                val newPasswordHashed = passwordCrypto.hashPassword(password)
-                updatePasswordService.updatePassword(userId = user.userId, newPassword = newPasswordHashed)
+                updatePasswordService.updatePassword(userId = user.userId, newPassword = password)
                 return Pair(true, "change password success")
             }
         }
