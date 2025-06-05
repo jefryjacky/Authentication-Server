@@ -5,8 +5,10 @@ import com.authentication.app.domain.repository.UserRepository
 import com.authentication.app.domain.usecase.password.UpdatePasswordService
 import com.authentication.app.domain.utils.PasswordCrypto
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import org.springframework.web.server.ResponseStatusException
 import java.util.*
 
 @Service
@@ -23,7 +25,7 @@ class ChangePasswordWithOtpServiceImpl: ChangePasswordWithOtpService {
     @Transactional
     override fun execute(email: String, password: String, otp: String): Pair<Boolean, String> {
         if(email.isBlank() || password.isBlank() || otp.isBlank()){
-            throw IllegalArgumentException("email, password or otp is blank")
+            throw ResponseStatusException(HttpStatus.BAD_REQUEST, "email, password or otp is blank")
         }
         val user = userRepository.getUser(email)
         val existingChangePasswordOtp = changePasswordOtpRepository.get(email)
@@ -33,13 +35,13 @@ class ChangePasswordWithOtpServiceImpl: ChangePasswordWithOtpService {
             calendar.add(Calendar.MINUTE, 3)
             val rateLimitDate = calendar.time
             if(Date() > rateLimitDate){
-                throw IllegalAccessException("invalid otp")
+                throw ResponseStatusException(HttpStatus.FORBIDDEN, "invalid OTP")
             } else {
                 val newPasswordHashed = passwordCrypto.hashPassword(password)
                 updatePasswordService.updatePassword(userId = user.userId, newPassword = newPasswordHashed)
                 return Pair(true, "change password success")
             }
         }
-        throw IllegalAccessException("invalid otp")
+        throw ResponseStatusException(HttpStatus.FORBIDDEN, "invalid OTP")
     }
 }
