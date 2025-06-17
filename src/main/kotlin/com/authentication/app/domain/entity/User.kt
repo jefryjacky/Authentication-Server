@@ -6,6 +6,7 @@ package com.authentication.app.domain.entity
 data class User(
         val userId: Long = 0,
         val email: String,
+        val displayName: String = "",
         val hashPassword: String,
         val emailverified:Boolean,
         val role: Role = Role.USER,

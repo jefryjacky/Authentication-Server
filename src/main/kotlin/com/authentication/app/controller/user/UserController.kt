@@ -106,7 +106,7 @@ class UserController {
         try {
             return getUserService.execute(token, userId).let { user->
                 UserResponse(
-                    user.userId, user.email, user.emailverified, user.role
+                    user.userId, user.email, user.displayName, user.emailverified, user.role
                 )
             }
         } catch (e: IllegalAccessException){
@@ -129,7 +129,7 @@ class UserController {
     ):UsersResponse{
         val pair = getUsersServices.execute(token, email?:"", max(0, page-1), limit)
         val users = pair.first.map {
-                UserResponse(it.userId, it.email, it.emailverified, it.role)
+                UserResponse(it.userId, it.email, it.displayName, it.emailverified, it.role)
             }
         val totalPages = pair.second
         return UsersResponse(totalPages, users)

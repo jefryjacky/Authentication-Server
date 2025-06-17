@@ -14,6 +14,7 @@ class UserDbMapperImpl: AbstractMapper<UserDB, User>() {
         return UserDB(
                 user.userId,
                 user.email,
+                user.displayName,
                 user.hashPassword,
                 user.emailverified,
                 user.role.name,
@@ -25,6 +26,7 @@ class UserDbMapperImpl: AbstractMapper<UserDB, User>() {
         return User(
                 userDb.userId,
                 userDb.email,
+                userDb.displayName?:"",
                 userDb.hashPassword,
                 userDb.emailVerified,
                 Role.create(userDb.role),

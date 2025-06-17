@@ -11,6 +11,8 @@ data class UserResponse(
         val userId: Long = 0,
         @JsonProperty("email")
         val email: String,
+        @JsonProperty("display_name")
+        val displayName:String,
         @JsonProperty("email_verified")
         val emailVerified:Boolean,
         @JsonProperty("role")

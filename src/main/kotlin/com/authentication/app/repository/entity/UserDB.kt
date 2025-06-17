@@ -22,6 +22,8 @@ data class UserDB (
         val userId: Long,
         @Column(unique = true)
         val email: String,
+        @Column(name = "display_name", nullable = true)
+        val displayName:String? = null,
         val hashPassword: String,
         @Column(columnDefinition = "boolean default false")
         val emailVerified: Boolean,

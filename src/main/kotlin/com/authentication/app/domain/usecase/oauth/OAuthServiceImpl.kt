@@ -66,6 +66,7 @@ class OAuthServiceImpl: OAuthService {
         if (existingUser == null) {
             val newUser = User(
                 email = user.email,
+                displayName = user.displayName,
                 hashPassword = passwordCrypto.hashPassword(passwordCrypto.generateNewPassword(12)),
                 emailverified = user.emailverified
             )

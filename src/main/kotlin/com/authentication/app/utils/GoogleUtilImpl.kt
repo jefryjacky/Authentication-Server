@@ -24,6 +24,7 @@ class GoogleUtilImpl:GoogleUtil {
         val payload = idToken.payload
         return User(
             email = payload.email,
+            displayName = payload["name"]?.toString()?:"",
             hashPassword = "",
             emailverified = payload.emailVerified
         )
