@@ -5,10 +5,10 @@ package com.authentication.app.domain.entity
  */
 data class User(
         val userId: Long = 0,
-        val email: String,
+        val email: String = "",
         val displayName: String = "",
-        val hashPassword: String,
-        val emailverified:Boolean,
+        val hashPassword: String = "",
+        val emailverified:Boolean = false,
         val role: Role = Role.USER,
         val isBlocked:Boolean = false
 )

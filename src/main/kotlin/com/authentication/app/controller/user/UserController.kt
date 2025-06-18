@@ -1,6 +1,7 @@
 package com.authentication.app.controller.user
 
 import com.authentication.app.controller.oauth.model.TokenResponse
+import com.authentication.app.controller.user.model.request.UpdateUserRequest
 import com.authentication.app.controller.user.model.response.UserResponse
 import com.authentication.app.controller.user.model.response.UsersResponse
 import com.authentication.app.domain.usecase.oauth.OAuthService
@@ -12,6 +13,7 @@ import com.authentication.app.domain.usecase.user.registeruser.RegisterUserServi
 import com.authentication.app.domain.usecase.user.sendemailverification.SendEmailVerificationService
 import com.authentication.app.domain.usecase.user.sendemailverificationotp.SendEmailVerificationOtpService
 import com.authentication.app.domain.usecase.user.unblock.UnBlockUserService
+import com.authentication.app.domain.usecase.user.update.UpdateUserService
 import com.authentication.app.domain.usecase.user.verifyemail.VerifyEmailService
 import com.authentication.app.domain.usecase.user.verifyemailotp.VerifyEmailOtpService
 import org.springframework.beans.factory.annotation.Autowired
@@ -48,6 +50,8 @@ class UserController {
     private lateinit var sendEmailVerificationOtp: SendEmailVerificationOtpService
     @Autowired
     private lateinit var verifyEmailOtp: VerifyEmailOtpService
+    @Autowired
+    private lateinit var updateUserService: UpdateUserService
 
     @PostMapping("/register", consumes = [MediaType.APPLICATION_FORM_URLENCODED_VALUE])
     @ResponseStatus(HttpStatus.CREATED)
@@ -167,6 +171,14 @@ class UserController {
                 throw ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR)
             }
         }
+    }
+
+    @PutMapping("/update")
+    fun updateUser(
+        @RequestHeader("Authorization") token: String,
+        @RequestBody request:UpdateUserRequest
+    ){
+        updateUserService.execute(token, request.toUser())
     }
 
     companion object{
