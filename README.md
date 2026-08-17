@@ -116,6 +116,9 @@ MAIL_PORT= your email port
 
 EMAIL_VERIFICATION_HOST= link for verify email
 FORGOT_PASSWORD_HOST= link for forgot password
+REDIS_HOST= your redis server host
+REDIS_PORT= your redis server port
+REDIS_PASSWORD= your redis server password
 ```
 
 

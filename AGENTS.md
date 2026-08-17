@@ -169,6 +169,9 @@ The application is configured via [application.properties](file:///C:/Users/jefr
 | `EMAIL_VERIFICATION_HOST`| Base URL for email verification link | `https://app.domain.com/verify-email` |
 | `FORGOT_PASSWORD_HOST` | Base URL for reset password link | `https://app.domain.com/reset-password` |
 | `GOOGLE_AUTH_CLIENT_ID`| Google OAuth2 Client ID | `xxxx.apps.googleusercontent.com` |
+| `REDIS_HOST` | Redis server host | `localhost` |
+| `REDIS_PORT` | Redis server port | `6379` |
+| `REDIS_PASSWORD` | Redis server password | `redis_secret_password` |
 
 ---
 
