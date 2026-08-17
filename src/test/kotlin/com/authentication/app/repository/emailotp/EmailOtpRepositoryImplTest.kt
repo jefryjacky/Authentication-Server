@@ -1,20 +1,23 @@
 package com.authentication.app.repository.emailotp
 
+import com.authentication.app.domain.EMAIL_OTP_EXPIRED_DURATION_MINUTES
 import com.authentication.app.domain.entity.EmailOtp
 import com.google.gson.GsonBuilder
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.ArgumentMatchers.eq
 import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.Mockito.*
-import org.mockito.MockitoAnnotations
+import org.mockito.junit.jupiter.MockitoExtension
 import org.springframework.data.redis.core.StringRedisTemplate
 import org.springframework.data.redis.core.ValueOperations
 import java.util.*
 import java.util.concurrent.TimeUnit
 
+@ExtendWith(MockitoExtension::class)
 class EmailOtpRepositoryImplTest {
 
     @Mock
@@ -30,8 +33,7 @@ class EmailOtpRepositoryImplTest {
 
     @BeforeEach
     fun setUp() {
-        MockitoAnnotations.initMocks(this)
-        `when`(stringRedisTemplate.opsForValue()).thenReturn(valueOperations)
+        lenient().`when`(stringRedisTemplate.opsForValue()).thenReturn(valueOperations)
     }
 
     @Test
@@ -46,7 +48,7 @@ class EmailOtpRepositoryImplTest {
         val expectedKey = "email_otp:$email"
         val expectedJson = gson.toJson(emailOtp)
 
-        verify(valueOperations).set(eq(expectedKey), eq(expectedJson), eq(3L), eq(TimeUnit.MINUTES))
+        verify(valueOperations).set(eq(expectedKey), eq(expectedJson), eq(EMAIL_OTP_EXPIRED_DURATION_MINUTES), eq(TimeUnit.MINUTES))
     }
 
     @Test
@@ -80,5 +82,15 @@ class EmailOtpRepositoryImplTest {
 
         assertNull(result)
         verify(valueOperations).get(expectedKey)
+    }
+
+    @Test
+    fun testDelete() {
+        val email = "test@example.com"
+        val expectedKey = "email_otp:$email"
+
+        emailOtpRepository.delete(email)
+
+        verify(stringRedisTemplate).delete(expectedKey)
     }
 }

@@ -1,5 +1,6 @@
 package com.authentication.app.domain.usecase.user.verifyemailotp
 
+import com.authentication.app.domain.EMAIL_OTP_EXPIRED_DURATION_MINUTES
 import com.authentication.app.domain.repository.EmailOtpRepository
 import com.authentication.app.domain.repository.UserRepository
 import com.authentication.app.domain.usecase.oauth.OAuthService
@@ -25,7 +26,7 @@ class VerifyEmailOtpServiceImpl:VerifyEmailOtpService {
         if(emailOtp?.otp == otp){
             val calendar = Calendar.getInstance()
             calendar.time = emailOtp.createdDate
-            calendar.add(Calendar.MINUTE, 3)
+            calendar.add(Calendar.MINUTE, EMAIL_OTP_EXPIRED_DURATION_MINUTES.toInt())
             val rateLimitDate = calendar.time
             if(Date() > rateLimitDate){
                 throw IllegalAccessException("invalid otp")
@@ -34,6 +35,7 @@ class VerifyEmailOtpServiceImpl:VerifyEmailOtpService {
                 val updatedUser = user?.copy(emailverified = true)
                 updatedUser?.let {
                     userRepository.save(updatedUser)
+                    emailOtpRepository.delete(email)
                     val refreshToken = oAuthService.generateRefreshToken(it.userId)
                     return oAuthService.requestAccessToken(refreshToken)
                 }

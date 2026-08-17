@@ -123,9 +123,10 @@ All endpoints operate under the base path `/api` and require `API-KEY: <key>` he
 
 ## 6. Database Schema & Persistence
 
+### 6.1. Relational Persistence (PostgreSQL & Hibernate JPA)
 Managed with Hibernate JPA (`spring.jpa.hibernate.ddl-auto=update`) against PostgreSQL:
 
-### `user_table`
+#### `user_table`
 - `userId` (`Long`, Primary Key, sequence `user_sequence`)
 - `email` (`VARCHAR`, Unique, Not Null)
 - `display_name` (`VARCHAR`, Nullable)
@@ -134,15 +135,17 @@ Managed with Hibernate JPA (`spring.jpa.hibernate.ddl-auto=update`) against Post
 - `role` (`VARCHAR`, `USER` or `ADMIN`)
 - `isBlocked` (`BOOLEAN`, default `false`)
 
-### `email_otp_table`
+#### `change_password_otp_table`
 - `email` (`VARCHAR`, Primary Key)
 - `otp` (`VARCHAR`, 6 digits)
 - `createdDate` (`TIMESTAMP`)
 
-### `change_password_otp_table`
-- `email` (`VARCHAR`, Primary Key)
-- `otp` (`VARCHAR`, 6 digits)
-- `createdDate` (`TIMESTAMP`)
+### 6.2. In-Memory Ephemeral Storage (Redis)
+Email verification OTPs are stored in Redis (`StringRedisTemplate`):
+- **Key Pattern**: `email_otp:<email>`
+- **Value**: JSON-serialized `EmailOtp` payload (`email`, `otp`, `createdDate`)
+- **TTL**: 3 minutes (`EMAIL_OTP_EXPIRED_DURATION_MINUTES`)
+- **Lifecycle**: Deleted immediately upon successful verification to prevent replay attacks.
 
 ---
 
@@ -208,4 +211,4 @@ docker run -p 8082:8082 --env-file .env authentication-server:latest
 - **Dependency Injection**: Use Spring `@Service` / `@Repository` components injected via field or constructor `@Autowired`.
 - **Entity Immutability**: Kotlin `data class` with copy constructors are preferred for domain models.
 - **Exceptions & HTTP Responses**: Business layer throws domain exceptions (`UnAuthorizedException`, `IllegalArgumentException`, `IllegalAccessException`), which controllers catch and translate into appropriate `ResponseStatusException` (e.g. `400 BAD_REQUEST`, `401 UNAUTHORIZED`, `403 FORBIDDEN`, `404 NOT_FOUND`).
-- **Mapper Pattern**: Always use dedicated mappers (`UserDbMapperImpl`, `EmailOtpDbMapperImpl`, etc.) to translate between JPA database models and domain entities.
+- **Mapper Pattern**: Always use dedicated mappers (`UserDbMapperImpl`, `ChangePasswordOtpDbMapperImpl`, etc.) to translate between JPA database models and domain entities.

@@ -1,5 +1,6 @@
 package com.authentication.app.repository.emailotp
 
+import com.authentication.app.domain.EMAIL_OTP_EXPIRED_DURATION_MINUTES
 import com.authentication.app.domain.entity.EmailOtp
 import com.authentication.app.domain.repository.EmailOtpRepository
 import com.google.gson.GsonBuilder
@@ -16,12 +17,11 @@ class EmailOtpRepositoryImpl : EmailOtpRepository {
 
     private val gson = GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ").create()
     private val keyPrefix = "email_otp:"
-    private val otpTtlMinutes = 3L
 
     override fun save(emailOtp: EmailOtp) {
         val key = "$keyPrefix${emailOtp.email}"
         val json = gson.toJson(emailOtp)
-        stringRedisTemplate.opsForValue().set(key, json, otpTtlMinutes, TimeUnit.MINUTES)
+        stringRedisTemplate.opsForValue().set(key, json, EMAIL_OTP_EXPIRED_DURATION_MINUTES, TimeUnit.MINUTES)
     }
 
     override fun get(email: String): EmailOtp? {
@@ -30,5 +30,10 @@ class EmailOtpRepositoryImpl : EmailOtpRepository {
         return json?.let {
             gson.fromJson(it, EmailOtp::class.java)
         }
+    }
+
+    override fun delete(email: String) {
+        val key = "$keyPrefix$email"
+        stringRedisTemplate.delete(key)
     }
 }

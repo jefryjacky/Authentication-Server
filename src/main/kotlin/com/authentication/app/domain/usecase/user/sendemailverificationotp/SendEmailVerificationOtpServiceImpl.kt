@@ -1,5 +1,6 @@
 package com.authentication.app.domain.usecase.user.sendemailverificationotp
 
+import com.authentication.app.domain.EMAIL_OTP_EXPIRED_DURATION_MINUTES
 import com.authentication.app.domain.entity.EmailOtp
 import com.authentication.app.domain.repository.EmailOtpRepository
 import com.authentication.app.domain.repository.UserRepository
@@ -29,7 +30,7 @@ class SendEmailVerificationOtpServiceImpl:SendEmailVerificationOtpService {
             if(existingEmailOtp != null){
                 val calendar = Calendar.getInstance()
                 calendar.time = existingEmailOtp.createdDate
-                calendar.add(Calendar.MINUTE, 3)
+                calendar.add(Calendar.MINUTE, EMAIL_OTP_EXPIRED_DURATION_MINUTES.toInt())
                 val rateLimitDate = calendar.time
                 if(Date() <= rateLimitDate) {
                     throw ResponseStatusException(HttpStatus.BAD_REQUEST, "you just request otp few minute ago")
