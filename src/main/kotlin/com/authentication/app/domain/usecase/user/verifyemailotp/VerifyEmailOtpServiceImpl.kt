@@ -32,11 +32,11 @@ class VerifyEmailOtpServiceImpl:VerifyEmailOtpService {
                 throw IllegalAccessException("invalid otp")
             } else {
                 val user = userRepository.getUser(email)
-                val updatedUser = user?.copy(emailverified = true)
-                updatedUser?.let {
+                if (user != null && !user.isBlocked && !user.emailverified) {
+                    val updatedUser = user.copy(emailverified = true)
                     userRepository.save(updatedUser)
                     emailOtpRepository.delete(email)
-                    val refreshToken = oAuthService.generateRefreshToken(it.userId)
+                    val refreshToken = oAuthService.generateRefreshToken(updatedUser.userId)
                     return oAuthService.requestAccessToken(refreshToken)
                 }
             }

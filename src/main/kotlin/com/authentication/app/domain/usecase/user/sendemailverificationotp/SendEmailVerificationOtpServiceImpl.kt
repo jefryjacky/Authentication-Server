@@ -7,9 +7,7 @@ import com.authentication.app.domain.repository.UserRepository
 import com.authentication.app.domain.utils.MailUtil
 import com.authentication.app.domain.utils.SecureRandomUtils
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
-import org.springframework.web.server.ResponseStatusException
 import java.util.*
 
 @Service
@@ -33,7 +31,7 @@ class SendEmailVerificationOtpServiceImpl:SendEmailVerificationOtpService {
                 calendar.add(Calendar.MINUTE, EMAIL_OTP_EXPIRED_DURATION_MINUTES.toInt())
                 val rateLimitDate = calendar.time
                 if(Date() <= rateLimitDate) {
-                    throw ResponseStatusException(HttpStatus.BAD_REQUEST, "you just request otp few minute ago")
+                    throw IllegalArgumentException("you just request otp few minute ago")
                 }
             }
             val otp = secureRandomUtils.generateOtp(6)
