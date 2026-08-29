@@ -4,5 +4,6 @@ import com.authentication.app.domain.entity.ChangePasswordOtp
 
 interface ChangePasswordOtpRepository {
     fun save(changePasswordOtp: ChangePasswordOtp)
-    fun get(email:String):ChangePasswordOtp?
+    fun get(email: String): ChangePasswordOtp?
+    fun delete(email: String)
 }

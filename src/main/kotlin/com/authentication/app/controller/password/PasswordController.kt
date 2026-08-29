@@ -97,8 +97,14 @@ class PasswordController {
     }
 
     @PostMapping("/update/otp")
-    fun updatePasswordByOtp(email: String, password:String, otp:String){
-        changePasswordWithOtpService.execute(email, password, otp)
+    fun updatePasswordByOtp(email: String, password: String, otp: String){
+        try {
+            changePasswordWithOtpService.execute(email, password, otp)
+        } catch (e: IllegalArgumentException) {
+            throw ResponseStatusException(HttpStatus.BAD_REQUEST, e.message)
+        } catch (e: IllegalAccessException) {
+            throw ResponseStatusException(HttpStatus.FORBIDDEN, e.message)
+        }
     }
 
     companion object{

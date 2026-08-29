@@ -42,9 +42,9 @@ src/main/kotlin/com/authentication/app/
 │   ├── usecase/                        # Single-responsibility business use case services
 │   └── utils/                          # Domain utility interfaces (Crypto, JWT, Mail, etc.)
 ├── repository/                         # Infrastructure / Persistence Layer (Adapters)
-│   ├── changepassword/                 # Change password OTP repository implementation
-│   ├── emailotp/                       # Email verification OTP repository implementation
-│   ├── entity/                         # JPA Database Entities (UserDB, EmailOtpDb, etc.)
+│   ├── changepassword/                 # Change password OTP repository (Redis)
+│   ├── emailotp/                       # Email verification OTP repository (Redis)
+│   ├── entity/                         # JPA Database Entities (UserDb)
 │   ├── mapper/                         # Mappers between JPA DB entities and Domain models
 │   └── user/                           # User repository implementation & JPA repository
 └── utils/                              # Infrastructure Implementations for Utilities
@@ -135,17 +135,20 @@ Managed with Hibernate JPA (`spring.jpa.hibernate.ddl-auto=update`) against Post
 - `role` (`VARCHAR`, `USER` or `ADMIN`)
 - `isBlocked` (`BOOLEAN`, default `false`)
 
-#### `change_password_otp_table`
-- `email` (`VARCHAR`, Primary Key)
-- `otp` (`VARCHAR`, 6 digits)
-- `createdDate` (`TIMESTAMP`)
-
 ### 6.2. In-Memory Ephemeral Storage (Redis)
-Email verification OTPs are stored in Redis (`StringRedisTemplate`):
+One-Time Passwords (OTPs) are stored in Redis (`StringRedisTemplate`):
+
+#### Email Verification OTP
 - **Key Pattern**: `email_otp:<email>`
 - **Value**: JSON-serialized `EmailOtp` payload (`email`, `otp`, `createdDate`)
 - **TTL**: 3 minutes (`EMAIL_OTP_EXPIRED_DURATION_MINUTES`)
 - **Lifecycle**: Deleted immediately upon successful verification to prevent replay attacks.
+
+#### Change Password OTP
+- **Key Pattern**: `change_password_otp:<email>`
+- **Value**: JSON-serialized `ChangePasswordOtp` payload (`email`, `otp`, `createdDate`)
+- **TTL**: 3 minutes (`CHANGE_PASSWORD_OTP_EXPIRED_DURATION_MINUTES`)
+- **Lifecycle**: Deleted immediately upon successful password update to prevent replay attacks.
 
 ---
 
