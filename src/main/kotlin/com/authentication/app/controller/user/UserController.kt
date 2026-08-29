@@ -87,11 +87,7 @@ class UserController {
 
     @PostMapping("/requestemailverification/otp")
     fun requestEmailVerificationOtp(email: String) {
-        try {
-            sendEmailVerificationOtp.execute(email)
-        } catch (e: IllegalArgumentException) {
-            throw ResponseStatusException(HttpStatus.BAD_REQUEST, e.message)
-        }
+        sendEmailVerificationOtp.execute(email)
     }
 
     @PostMapping("/verify/email/otp")

@@ -1,4 +1,4 @@
-﻿package com.authentication.app.domain.usecase.user.sendemailverificationotp
+package com.authentication.app.domain.usecase.user.sendemailverificationotp
 
 import com.authentication.app.domain.EMAIL_OTP_EXPIRED_DURATION_MINUTES
 import com.authentication.app.domain.entity.EmailOtp
@@ -75,7 +75,7 @@ class SendEmailVerificationOtpServiceImplTest {
     }
 
     @Test
-    fun testExecute_RateLimited() {
+    fun testExecute_RateLimited_DoesNothing() {
         val email = "user@example.com"
         val user = User(userId = 1L, email = email, emailverified = false, isBlocked = false, role = Role.USER)
         val existingOtp = EmailOtp(email, "654321", Date())
@@ -83,10 +83,7 @@ class SendEmailVerificationOtpServiceImplTest {
         `when`(userRepository.getUser(email)).thenReturn(user)
         `when`(emailOtpRepository.get(email)).thenReturn(existingOtp)
 
-        val exception = assertThrows(IllegalArgumentException::class.java) {
-            service.execute(email)
-        }
-        assertEquals("you just request otp few minute ago", exception.message)
+        service.execute(email)
 
         verify(emailOtpRepository, never()).save(anyObject(dummyEmailOtp))
         verify(mailUtil, never()).sendEmailOtpCode(anyStringVal(), anyStringVal())

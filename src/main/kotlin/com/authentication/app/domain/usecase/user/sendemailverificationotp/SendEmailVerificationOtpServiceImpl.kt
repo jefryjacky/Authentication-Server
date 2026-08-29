@@ -30,9 +30,7 @@ class SendEmailVerificationOtpServiceImpl:SendEmailVerificationOtpService {
                 calendar.time = existingEmailOtp.createdDate
                 calendar.add(Calendar.MINUTE, EMAIL_OTP_EXPIRED_DURATION_MINUTES.toInt())
                 val rateLimitDate = calendar.time
-                if(Date() <= rateLimitDate) {
-                    throw IllegalArgumentException("you just request otp few minute ago")
-                }
+                if(Date() <= rateLimitDate) return
             }
             val otp = secureRandomUtils.generateOtp(6)
             val emailOtp = EmailOtp(email, otp, Date())
