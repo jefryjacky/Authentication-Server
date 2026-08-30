@@ -18,7 +18,6 @@ class ChangePasswordWithOtpServiceImpl: ChangePasswordWithOtpService {
     @Autowired
     private lateinit var updatePasswordService: UpdatePasswordService
 
-    @Transactional
     override fun execute(email: String, password: String, otp: String): Pair<Boolean, String> {
         if(email.isBlank() || password.isBlank() || otp.isBlank()){
             throw IllegalArgumentException("email, password or otp is blank")
